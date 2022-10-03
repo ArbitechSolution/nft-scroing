@@ -4,7 +4,6 @@ const API_KEY = process.env.REACT_APP_API_KEY;
 export const Sale_RankingApi = (params, selectvalue) => async(dispatch)=>{
     try{
   let finalArray = []
-
         dispatch({
             type: SALE_RANKING,
             payload: {
@@ -12,11 +11,11 @@ export const Sale_RankingApi = (params, selectvalue) => async(dispatch)=>{
                 isLoading:true,
                 filterdta:[],
                 outlierDta :[]
-
             }
            });
-   let res = await axios.get(`https://orcanftapi.net:5000/api/collection/SaleChart?period=${selectvalue}&collectionName=${params.collectionName}`)
-let typicalData = res?.data?.items;
+let res = await axios.get(`https://api.nftinit.io/api/sale_chart/?slug=${params.collectionName}&tc=true&tn=true&get_listings=true&period=${selectvalue}`)
+//    let res = await axios.get(`https://orcanftapi.net:5000/api/collection/SaleChart?period=${selectvalue}&collectionName=${params.collectionName}`)
+   let typicalData = res?.data?.items;
 
 dispatch({
     type: SALE_RANKING,
@@ -27,22 +26,27 @@ dispatch({
         outlierDta :[]
     }
    });
-
    typicalData?.map((items) => {
     let splittedData = items.event_date.split("T")
     let finalSplit = splittedData[1].split("Z")
-    finalArray = [...finalArray, { "price": items.event_price, "date": finalSplit[0] }]
+    // let seconsSplit = finalSplit[0].split(":")
+    // let intSplit = parseInt(seconsSplit[0]);
+    // console.log(type)
+    // let finalTime = `${seconsSplit[0]}:${seconsSplit[0]}`
+    // console.log("finalTime",finalTime)
+    finalArray = [...finalArray, { "price": items?.event_price, "date": finalSplit[0] }]
   })
-  finalArray= finalArray.reverse()
+//   finalArray= finalArray?.reverse()
 
-  let values = finalArray.sort( function(a, b) {
-    return a.price - b.price;
+  let values = finalArray?.sort( function(a, b) {
+    console.log("a finalArray",a.price)
+    return a?.price - b?.price;
   });
   var q1 = values[Math.floor((values.length / 4))];
   var q3 = values[Math.ceil((values.length * (3 / 4)))];
-  var iqr = q3.price - q1.price;
-  var maxValue = q3.price + iqr*1.5;
-  var minValue = q1.price - iqr*1.5;
+  var iqr = q3?.price - q1?.price;
+  var maxValue = q3?.price + iqr*1.5;
+  var minValue = q1?.price - iqr*1.5;
   let filteredData = values.filter(function(x) {
     if(x.price <= maxValue && x.price >= minValue){
       return x;
@@ -135,7 +139,6 @@ export const Floor_Price_Api = (params,selectvalue)=>async(dispatch)=>{
                 data:[],
                 isLoading:false
             }
-            
         })  
 
         let valTobepassed ;

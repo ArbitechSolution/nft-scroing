@@ -16,21 +16,46 @@ import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
 import { Sale_RankingApi } from '../redux/Action/Action';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-
+// import {Chart} from "chart"
 function SaleRanking() {
   const dispatch = useDispatch()
+  const [shuffledData, setShuffledData]= useState([])
   const [isOutlierData, setisLierData] = useState(true)
 const colors = scaleOrdinal(schemeCategory10).range();
 
   const {saleData, isLoading,filterdta,outlierDta} = useSelector((state) => state.Sale_RankingReducer)
-  let selectvalue ="15m"
+  let selectvalue ="15M"
   const getValue = (e) =>{
   let slectElement = e.target
    selectvalue = slectElement.value;
   dispatch(Sale_RankingApi(params, selectvalue))
   }
 
-  
+  // new Chart
+function shuffle(array) {
+  let currentIndex = array.length,  randomIndex;
+
+  // While there remain elements to shuffle.
+  while (currentIndex != 0) {
+
+    // Pick a remaining element.
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex], array[currentIndex]];
+  }
+
+  setShuffledData( array);
+}
+let len = outlierDta.length
+
+
+useEffect(()=>{
+  shuffle(outlierDta)
+},[isLoading])  
+
 
   const params = useParams()
   useEffect(() => {
@@ -45,10 +70,16 @@ const colors = scaleOrdinal(schemeCategory10).range();
           <span>Period</span>
           <div className="selectFloorPrice ms-2">
             <select  className='selectFloorPriceDown' onChange={(e)=>getValue(e)}>
-              <option value="15m">15 min</option>
-              <option value="30m">30 min</option>
-              <option value="45m">45 min</option>
-              <option value="1h">1 hour</option>
+              <option value="15M">15 min</option>
+              <option value="1H">1H</option>
+              <option value="4H">4H</option>
+              <option value="12H">12H</option>
+              <option value="1D">1D</option>
+              <option value="3D">3D</option>
+              <option value="7D">7D</option>
+              <option value="14D">14D</option>
+              <option value="30D">30D</option>
+
             </select>
           </div>
         </div>
@@ -69,18 +100,20 @@ const colors = scaleOrdinal(schemeCategory10).range();
          width={400}
          height={400}
           margin={{ top: 30, right: 20, bottom: 10, left: 10 }}>
-          <XAxis dataKey="date" name="date"  />
-          <YAxis dataKey="price" name="price" />
+          <XAxis dataKey="date" name="date"/>
+          <YAxis dataKey="price" name="price"/>
           <Tooltip cursor={{ strokeDasharray: "1 1"}} />
          
-          <Scatter   data={isOutlierData?outlierDta:filterdta} fill="#8884d8" >
+          <Scatter   data={isOutlierData?shuffledData:filterdta} fill="#8884d8" >
           {outlierDta.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
+              <Cell r={0.002} key={`cell-${index}`} fill={colors[index % colors.length]} />
             ))}
           </Scatter>
           
         </ScatterChart>
-      </ResponsiveContainer>:
+      </ResponsiveContainer>
+    
+      :
       <SkeletonTheme baseColor="#202020" highlightColor="#444">
         <p>
             <Skeleton count={12} />

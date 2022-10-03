@@ -237,7 +237,7 @@ useEffect(()=>{
                                   <div style={{ borderRight: "2px solid rgba(53, 53, 84)" }}>
                                       <div className="analysisBoardSpantraderfoollr " >OS Floor</div>
                                       <div className="flex items-center  fw-bold space-x-2" ><img src={ether} alt="ether" className="me-3" style={{ width: "12px" }} />
-                                          {floorprice.toFixed(3)}
+                                          {floorprice?.toFixed(3)}
                                       </div>
                                   </div>
                               </div>
@@ -245,7 +245,7 @@ useEffect(()=>{
                                   <div style={{  }}>
                                       <div className="analysisBoardSpantraderfoollr pe-1">OS Volume</div>
                                       <div className="flex items-center fw-bold  pe-1"><img src={ether} alt="ether" className="me-3" style={{ width: "12px" }} />
-                                          {osFloor.toFixed(3)}
+                                          {osFloor?.toFixed(3)}
                                       </div>
                                   </div>
                               </div>
@@ -462,7 +462,7 @@ useEffect(()=>{
                                         
                                         finalSplit[0]
                                         } &nbsp;</span>&nbsp;&nbsp;
-                                        <span className="analysisBoardSpan12 text-white"><img src={ether} width="8px" /> {parseFloat(items.event_price).toFixed(3)}</span>
+                                        <span className="analysisBoardSpan12 text-white"><img src={ether} width="8px" /> {parseFloat(items.event_price)?.toFixed(3)}</span>
                                     </div>
                                     <div className="me-2">
                                         <img src={opensea} width="18px" />
@@ -528,7 +528,7 @@ useEffect(()=>{
                                     <div className="" >
                                         <span className="analysisBoardSpantrader ">Sold For</span>
                                         <br />
-                                        <span className="analysisBoardSpan122 text-white"><img src={ether} width="8px" /> {parseFloat(items.event_price).toFixed(3)}</span>
+                                        <span className="analysisBoardSpan122 text-white"><img src={ether} width="8px" /> {parseFloat(items.event_price)?.toFixed(3)}</span>
                                     </div>
                                     <div className="d-flex flex-column  align-items-center justify-content-evenly" >
                                         <span className="analysisBoardSpantrader " >Market</span>
