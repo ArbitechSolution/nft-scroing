@@ -1,5 +1,7 @@
 import {SALE_RANKING, FETCH_cOLLECTON,GET_CURRENT_LIST, ANALYSIS_BOARD, ASSETS_FOR_SALE, FLOOR_PRICE} from "../Type"
 import axios from "axios"
+import moment from "moment";
+
 const API_KEY = process.env.REACT_APP_API_KEY;
 export const Sale_RankingApi = (params, selectvalue) => async(dispatch)=>{
     try{
@@ -13,7 +15,7 @@ export const Sale_RankingApi = (params, selectvalue) => async(dispatch)=>{
                 outlierDta :[]
             }
            });
-let res = await axios.get(`https://api.nftinit.io/api/sale_chart/?slug=${params.collectionName}&tc=true&tn=true&get_listings=true&period=${selectvalue}`)
+let res = await axios.get(`https://api.nftinit.io/api/sale_chart/?tc=true&tn=true&get_listings=true&period=${selectvalue}&slug=${params.collectionName}`)
 //    let res = await axios.get(`https://orcanftapi.net:5000/api/collection/SaleChart?period=${selectvalue}&collectionName=${params.collectionName}`)
    let typicalData = res?.data?.items;
 
@@ -27,19 +29,24 @@ dispatch({
     }
    });
    typicalData?.map((items) => {
-    let splittedData = items.event_date.split("T")
-    let finalSplit = splittedData[1].split("Z")
+    let finalTime =new Date(items.event_date);
+    finalTime = finalTime.getTime()
+
+    // console.log("items.finalTime",finalTime);
+    // let splittedData = items.event_date.split("T")
+    // let finalSplit = splittedData[1].split("Z")
     // let seconsSplit = finalSplit[0].split(":")
-    // let intSplit = parseInt(seconsSplit[0]);
-    // console.log(type)
-    // let finalTime = `${seconsSplit[0]}:${seconsSplit[0]}`
-    // console.log("finalTime",finalTime)
-    finalArray = [...finalArray, { "price": items?.event_price, "date": finalSplit[0] }]
+    // let finalTime = `${seconsSplit[0]}:${seconsSplit[1]}`
+    // console.log("finalTime", finalTime)
+    console.log("momentinf sadfddsf",moment(finalTime).format('HH:mm'))
+
+    finalArray = [...finalArray, { "price": items?.event_price, "date": finalTime }]
   })
 //   finalArray= finalArray?.reverse()
+  console.log("Final array is ", finalArray)
 
   let values = finalArray?.sort( function(a, b) {
-    console.log("a finalArray",a.price)
+    console.log("a finalArray",a.date)
     return a?.price - b?.price;
   });
   var q1 = values[Math.floor((values.length / 4))];

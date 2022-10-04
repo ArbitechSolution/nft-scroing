@@ -10,6 +10,8 @@ import {
   Legend,
   Cell
 } from "recharts"
+import moment from "moment";
+
 import { scaleOrdinal } from 'd3-scale';
 import { schemeCategory10 } from 'd3-scale-chromatic';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
@@ -18,10 +20,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 // import {Chart} from "chart"
 function SaleRanking() {
+  let maxPrice;
+  let minPrice;
   const dispatch = useDispatch()
   const [shuffledData, setShuffledData]= useState([])
   const [isOutlierData, setisLierData] = useState(true)
-const colors = scaleOrdinal(schemeCategory10).range();
+  const colors = scaleOrdinal(schemeCategory10).range();
 
   const {saleData, isLoading,filterdta,outlierDta} = useSelector((state) => state.Sale_RankingReducer)
   let selectvalue ="15M"
@@ -33,15 +37,20 @@ const colors = scaleOrdinal(schemeCategory10).range();
 
   // new Chart
 function shuffle(array) {
+  console.log("the array inside Shuffle",array)
+  const prices = array.map((obj)=>{
+    return obj.price
+  })
+  minPrice =Math.min(...prices)
+  maxPrice =Math.max(...prices)
+  console.log("min price is ",minPrice )
+  // console.log("Max price is ",Math.min(...prices) )
   let currentIndex = array.length,  randomIndex;
-
   // While there remain elements to shuffle.
   while (currentIndex != 0) {
-
     // Pick a remaining element.
     randomIndex = Math.floor(Math.random() * currentIndex);
     currentIndex--;
-
     // And swap it with the current element.
     [array[currentIndex], array[randomIndex]] = [
       array[randomIndex], array[currentIndex]];
@@ -100,12 +109,21 @@ useEffect(()=>{
          width={400}
          height={400}
           margin={{ top: 30, right: 20, bottom: 10, left: 10 }}>
-          <XAxis dataKey="date" name="date"/>
-          <YAxis dataKey="price" name="price"/>
+          <XAxis dataKey="date" name="date"
+          type = "category"
+          allowDuplicatedCategory={false}
+          // domain={[left, right]}
+          // tickCount={2}
+          // minTickGap={60}
+          tickFormatter={timeStr => moment(timeStr).format('HH:mm')} 
+            />
+          <YAxis dataKey="price" name="price" 
+          domain={[minPrice, maxPrice]}
+          />
           <Tooltip cursor={{ strokeDasharray: "1 1"}} />
          
           <Scatter   data={isOutlierData?shuffledData:filterdta} fill="#8884d8" >
-          {outlierDta.map((entry, index) => (
+          {shuffledData.map((entry, index) => (
               <Cell r={0.002} key={`cell-${index}`} fill={colors[index % colors.length]} />
             ))}
           </Scatter>
