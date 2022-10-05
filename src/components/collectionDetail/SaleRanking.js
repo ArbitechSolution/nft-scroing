@@ -27,11 +27,13 @@ function SaleRanking() {
   const [isOutlierData, setisLierData] = useState(true)
   const colors = scaleOrdinal(schemeCategory10).range();
 
-  const {saleData, isLoading,filterdta,outlierDta} = useSelector((state) => state.Sale_RankingReducer)
+  const {saleData, isLoading,filterdta,outlierDta} = useSelector((state) => state.Sale_RankingReducer);
+  // console.log("saleData", saleData);
+  // console.log("outlierDta", outlierDta);
   let selectvalue ="15M"
   const getValue = (e) =>{
-  let slectElement = e.target
-   selectvalue = slectElement.value;
+  let {value} = e.target
+   selectvalue = value;
   dispatch(Sale_RankingApi(params, selectvalue))
   }
 
@@ -43,8 +45,6 @@ function shuffle(array) {
   })
   minPrice =Math.min(...prices)
   maxPrice =Math.max(...prices)
-  console.log("min price is ",minPrice )
-  // console.log("Max price is ",Math.min(...prices) )
   let currentIndex = array.length,  randomIndex;
   // While there remain elements to shuffle.
   while (currentIndex != 0) {
@@ -80,14 +80,12 @@ useEffect(()=>{
           <div className="selectFloorPrice ms-2">
             <select  className='selectFloorPriceDown' onChange={(e)=>getValue(e)}>
               <option value="15M">15 min</option>
-              <option value="1H">1H</option>
+              <option value="1H" >1H</option>
               <option value="4H">4H</option>
               <option value="12H">12H</option>
               <option value="1D">1D</option>
               <option value="3D">3D</option>
               <option value="7D">7D</option>
-              <option value="14D">14D</option>
-              <option value="30D">30D</option>
 
             </select>
           </div>
@@ -107,23 +105,27 @@ useEffect(()=>{
         <ResponsiveContainer  className="floorpriceheight">
         <ScatterChart
          width={400}
-         height={400}
+         height={600}
           margin={{ top: 30, right: 20, bottom: 10, left: 10 }}>
-          <XAxis dataKey="date" name="date"
+            
+          <XAxis dataKey="timestamp" name="date"
           type = "category"
-          allowDuplicatedCategory={false}
-          // domain={[left, right]}
-          // tickCount={2}
+          // allowDuplicatedCategory={false}
+          // domain={['auto', 'auto']}
+            domain={[saleData[0]?.timestamp, saleData[saleData.length]?.timestamp]}
+          // tickCount={10}
           // minTickGap={60}
           tickFormatter={timeStr => moment(timeStr).format('HH:mm')} 
             />
           <YAxis dataKey="price" name="price" 
-          domain={[minPrice, maxPrice]}
+          // domain={[minPrice, maxPrice]}
           />
           <Tooltip cursor={{ strokeDasharray: "1 1"}} />
          
-          <Scatter   data={isOutlierData?shuffledData:filterdta} fill="#8884d8" >
-          {shuffledData.map((entry, index) => (
+          <Scatter   data={isOutlierData?shuffledData:saleData} fill="#8884d8" >
+          {/* <Scatter   data={saleData} fill="#8884d8" > */}
+
+          {saleData.map((entry, index) => (
               <Cell r={0.002} key={`cell-${index}`} fill={colors[index % colors.length]} />
             ))}
           </Scatter>

@@ -15,22 +15,26 @@ export const Sale_RankingApi = (params, selectvalue) => async(dispatch)=>{
                 outlierDta :[]
             }
            });
-let res = await axios.get(`https://api.nftinit.io/api/sale_chart/?tc=true&tn=true&get_listings=true&period=${selectvalue}&slug=${params.collectionName}`)
+           let {data} =await axios.get(`http://localhost:7070/v2/saleListing?timestamp=${selectvalue}&collection_slug=${params.collectionName}`)
+           let {result} = data
+           console.log("result", result);
+           let res = await axios.get(`https://api.nftinit.io/api/sale_chart/?tc=true&tn=true&get_listings=true&period=${selectvalue}&slug=${params.collectionName}`)
+           console.log("res", res.data);
 //    let res = await axios.get(`https://orcanftapi.net:5000/api/collection/SaleChart?period=${selectvalue}&collectionName=${params.collectionName}`)
    let typicalData = res?.data?.items;
 
 dispatch({
     type: SALE_RANKING,
     payload: {
-        data:res.data.items,
+        data:result,
         isLoading:true,
         filterdta:[],
         outlierDta :[]
     }
    });
-   typicalData?.map((items) => {
-    let finalTime =new Date(items.event_date);
-    finalTime = finalTime.getTime()
+   result?.map((items) => {
+    // let finalTime =new Date(items.event_date);
+    // finalTime = finalTime.getTime()
 
     // console.log("items.finalTime",finalTime);
     // let splittedData = items.event_date.split("T")
@@ -38,32 +42,32 @@ dispatch({
     // let seconsSplit = finalSplit[0].split(":")
     // let finalTime = `${seconsSplit[0]}:${seconsSplit[1]}`
     // console.log("finalTime", finalTime)
-    console.log("momentinf sadfddsf",moment(finalTime).format('HH:mm'))
+    console.log("momentinf sadfddsf",moment(items.timestamp).format('HH:mm'))
 
-    finalArray = [...finalArray, { "price": items?.event_price, "date": finalTime }]
+    // finalArray = [...finalArray, { "price": items?.event_price, "date": finalTime }]
   })
-//   finalArray= finalArray?.reverse()
-  console.log("Final array is ", finalArray)
 
-  let values = finalArray?.sort( function(a, b) {
-    console.log("a finalArray",a.date)
-    return a?.price - b?.price;
+  let values = result?.sort( function(a, b) {
+    return a.price - b.price;
   });
+  console.log("values", values);
   var q1 = values[Math.floor((values.length / 4))];
   var q3 = values[Math.ceil((values.length * (3 / 4)))];
   var iqr = q3?.price - q1?.price;
   var maxValue = q3?.price + iqr*1.5;
+  console.log("max", maxValue);
   var minValue = q1?.price - iqr*1.5;
+  console.log("min", minValue);
   let filteredData = values.filter(function(x) {
     if(x.price <= maxValue && x.price >= minValue){
       return x;
     }
   });
-
+  console.log("filteredData", filteredData);
    dispatch({
     type: SALE_RANKING,
     payload: {
-        data:res.data.items,
+        data:result,
         isLoading:false,
         filterdta:finalArray,
         outlierDta :filteredData
@@ -168,6 +172,8 @@ export const Floor_Price_Api = (params,selectvalue)=>async(dispatch)=>{
         }
         
         let res = await axios.get(`https://orcanftapi.net:5000/api/collection/FloorPrice?timestamp=${valTobepassed}&collectionName=${params.collectionName}`)
+        console.log("valTobepassed", res);
+        
         dispatch({
             type: FLOOR_PRICE,
             payload: {

@@ -19,8 +19,9 @@ function FloorPrice() {
     const dispatch = useDispatch()
   let finalArray = []
 
-  const {floorData,isLoading} = useSelector((state)=>state.Floor_Price_Reducer)
-    floorData?.map((items) => {
+  const {floorData,isLoading} = useSelector((state)=>state.Floor_Price_Reducer);
+  console.log("floorData", floorData)
+    floorData?.map((items) => { 
         let splittedData = items.timestamp.split(" ")
         finalArray = [...finalArray, { "price": items.floor_price, "date": splittedData[1]}]
       })

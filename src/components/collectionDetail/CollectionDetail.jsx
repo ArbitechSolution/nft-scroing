@@ -17,8 +17,6 @@ function CollectionDetail() {
   const dispatch = useDispatch()
   const [period, setPeriod] = useState(60);
   const {collections, isLoading} = useSelector((state)=> state.Fetch_Collection_Reducer);
-
-console.log("collections", collections);
   useEffect(() => {
       dispatch(Fetch_Collection_Api(period))
   }, [period]);
