@@ -15,13 +15,15 @@ export const Sale_RankingApi = (params, selectvalue) => async(dispatch)=>{
                 outlierDta :[]
             }
            });
-           let {data} =await axios.get(`http://localhost:7070/v2/saleListing?timestamp=${selectvalue}&collection_slug=${params.collectionName}`)
+           let {data} =await axios.get(`https://nft-scoring.herokuapp.com/v2/saleListing?timestamp=${selectvalue}&collection_slug=${params.collectionName}`)
+
+        //    let {data} =await axios.get(`http://localhost:7070/v2/saleListing?timestamp=${selectvalue}&collection_slug=${params.collectionName}`)
            let {result} = data
-           console.log("result", result);
-           let res = await axios.get(`https://api.nftinit.io/api/sale_chart/?tc=true&tn=true&get_listings=true&period=${selectvalue}&slug=${params.collectionName}`)
-           console.log("res", res.data);
+        //    console.log("result", result);
+        //    let res = await axios.get(`https://api.nftinit.io/api/sale_chart/?tc=true&tn=true&get_listings=true&period=${selectvalue}&slug=${params.collectionName}`)
+        //    console.log("res", res.data);
 //    let res = await axios.get(`https://orcanftapi.net:5000/api/collection/SaleChart?period=${selectvalue}&collectionName=${params.collectionName}`)
-   let typicalData = res?.data?.items;
+//    let typicalData = res?.data?.items;
 
 dispatch({
     type: SALE_RANKING,
@@ -32,38 +34,38 @@ dispatch({
         outlierDta :[]
     }
    });
-   result?.map((items) => {
-    // let finalTime =new Date(items.event_date);
-    // finalTime = finalTime.getTime()
+//    result?.map((items) => {
+//     // let finalTime =new Date(items.event_date);
+//     // finalTime = finalTime.getTime()
 
-    // console.log("items.finalTime",finalTime);
-    // let splittedData = items.event_date.split("T")
-    // let finalSplit = splittedData[1].split("Z")
-    // let seconsSplit = finalSplit[0].split(":")
-    // let finalTime = `${seconsSplit[0]}:${seconsSplit[1]}`
-    // console.log("finalTime", finalTime)
-    console.log("momentinf sadfddsf",moment(items.timestamp).format('HH:mm'))
+//     // console.log("items.finalTime",finalTime);
+//     // let splittedData = items.event_date.split("T")
+//     // let finalSplit = splittedData[1].split("Z")
+//     // let seconsSplit = finalSplit[0].split(":")
+//     // let finalTime = `${seconsSplit[0]}:${seconsSplit[1]}`
+//     // console.log("finalTime", finalTime)
+//     console.log("momentinf sadfddsf",moment(items.timestamp).format('HH:mm'))
 
-    // finalArray = [...finalArray, { "price": items?.event_price, "date": finalTime }]
-  })
+//     // finalArray = [...finalArray, { "price": items?.event_price, "date": finalTime }]
+//   })
 
   let values = result?.sort( function(a, b) {
     return a.price - b.price;
   });
-  console.log("values", values);
+//   console.log("values", values);
   var q1 = values[Math.floor((values.length / 4))];
   var q3 = values[Math.ceil((values.length * (3 / 4)))];
   var iqr = q3?.price - q1?.price;
   var maxValue = q3?.price + iqr*1.5;
-  console.log("max", maxValue);
+//   console.log("max", maxValue);
   var minValue = q1?.price - iqr*1.5;
-  console.log("min", minValue);
+//   console.log("min", minValue);
   let filteredData = values.filter(function(x) {
     if(x.price <= maxValue && x.price >= minValue){
       return x;
     }
   });
-  console.log("filteredData", filteredData);
+//   console.log("filteredData", filteredData);
    dispatch({
     type: SALE_RANKING,
     payload: {
@@ -155,24 +157,26 @@ export const Floor_Price_Api = (params,selectvalue)=>async(dispatch)=>{
         let valTobepassed ;
         let  currentdate = (new Date()).getTime();
         currentdate = parseInt(currentdate/1000)
-        if(selectvalue =="15m"){
+        if(selectvalue =="15M"){
             valTobepassed = parseFloat(currentdate)-900
-        }else if(selectvalue =="30m"){
-
-            valTobepassed = parseFloat(currentdate)-1800
-
-        }else if(selectvalue =="45m"){
-
-            valTobepassed = parseFloat(currentdate)-2700
-
-        }else{
+        }else if(selectvalue =="1H"){
 
             valTobepassed = parseFloat(currentdate)-3600
+
+        }else if(selectvalue =="1D"){
+
+            valTobepassed = parseFloat(currentdate)-86400
+
+        }else if (selectvalue=="7D"){
+
+            valTobepassed = parseFloat(currentdate)-604800
+
+        }else{
+            valTobepassed = parseFloat(currentdate)-2592000
 
         }
         
         let res = await axios.get(`https://orcanftapi.net:5000/api/collection/FloorPrice?timestamp=${valTobepassed}&collectionName=${params.collectionName}`)
-        console.log("valTobepassed", res);
         
         dispatch({
             type: FLOOR_PRICE,

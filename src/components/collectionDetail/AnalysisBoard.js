@@ -19,7 +19,8 @@ import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
 import AssetsForSale from "./AssetsForSale";
 import FloorPrice from "./FloorPrice";
 import copy from "copy-to-clipboard"; 
-import SaleRanking from "./SaleRanking";
+// import SaleRanking from "./SaleRanking";
+import MyScatterPlot from "./ScatterPlot"
 import {AiFillCaretUp, AiFillPlusCircle} from "react-icons/ai"
 import { useParams  } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
@@ -495,7 +496,8 @@ useEffect(()=>{
                   <div className="row justify-content-center">
                   <div className="col-lg-11 col-11 box-width-chart">
                           <div className="text-white text-xl font-bold text-center mb-2 mt-4">Sales/Ranking</div>
-                          <SaleRanking />
+                          {/* <SaleRanking /> */}
+                          <MyScatterPlot/>
                       </div>
                   </div>
                       

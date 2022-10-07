@@ -26,7 +26,7 @@ function FloorPrice() {
         finalArray = [...finalArray, { "price": items.floor_price, "date": splittedData[1]}]
       })
 
-let selectvalue ="15m"
+let selectvalue ="30D"
 const getValue = (e) =>{
 let slectElement = e.target
  selectvalue = slectElement.value;
@@ -44,10 +44,11 @@ dispatch(Floor_Price_Api(params, selectvalue))
                 <span>Period</span>
                 <div className="selectFloorPrice ms-2">
                     <select className='selectFloorPriceDown' onChange={(e)=>getValue(e)}>
-                    <option value="15m">15 min</option>
-              <option value="30m">30 min</option>
-              <option value="45m">45 min</option>
-              <option value="1h">1 hour</option>
+                    <option value="15M">15min</option>
+                            <option value="1H" >1H</option>
+                            <option value="1D">1D</option>
+                            <option value="7D" >7D</option>
+                            <option value="30D" selected>30D</option>
                     </select>
                 </div>
             </div>

@@ -47,11 +47,12 @@
     "redux-thunk": "^2.4.1",
     "styled-components": "^5.3.5",
     "use-clipboard-copy": "^0.2.0",
-    "web3": "^1.8.0"
+    "web3": "^1.8.0",
+    "yarn": "^1.22.19"
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts --max_old_space_size=4096 build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
