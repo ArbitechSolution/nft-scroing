@@ -24,7 +24,6 @@ data?.map((items) => {
     let finalSplit = splittedData[1].split("Z")
     finalArray = [...finalArray, { "price": items.event_price, "date": finalSplit[0] }]
   })
-console.log("AssetsForSaleData", isLoading);
     useEffect(()=>{
         dispatch(AssetsForSale_Api(params))
     }, [])
@@ -45,7 +44,7 @@ console.log("AssetsForSaleData", isLoading);
             </div>
             </div>
             {
-                isLoading?  <ResponsiveContainer width="99%"  className="floorpriceheight">
+                isLoading?  <ResponsiveContainer width="100%"  className="floorpriceheight">
                 <AreaChart   data={finalArray}
                     margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                     <defs>
@@ -63,7 +62,7 @@ console.log("AssetsForSaleData", isLoading);
                 </AreaChart>
                 </ResponsiveContainer>:<SkeletonTheme baseColor="#202020" highlightColor="#444">
         <p>
-            <Skeleton count={12} />
+            <Skeleton count={14} />
         </p>
     </SkeletonTheme>
             }

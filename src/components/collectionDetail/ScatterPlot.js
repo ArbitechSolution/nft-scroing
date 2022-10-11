@@ -11,7 +11,7 @@ import {
 import { Scatter } from 'react-chartjs-2';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Sale_RankingApi } from '../redux/Action/Action';
+import { Sale_RankingApi} from '../redux/Action/Action';
 import { useParams } from 'react-router-dom';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
 
@@ -20,33 +20,30 @@ import 'chartjs-adapter-moment'
 ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend, TimeScale);
 
 function MyScatterPlot() {
-
+    const [loadingSetTimeOut, setLoadingsetTimeout] = useState(true)
     const dispatch = useDispatch()
     const { saleData, isLoading, filterdta, outlierDta } = useSelector((state) => state.Sale_RankingReducer);
-    const [timeScale, setTimeScale] = useState('minute')
-  const [isOutlierData, setisLierData] = useState(true)
+    const [timeScale, setTimeScale] = useState('day')
+    const [isOutlierData, setisLierData] = useState(true)
 
     let selectvalue = "7D"
     if(isOutlierData){
-        console.log("true whowing",outlierDta);
-
+        // console.log("true whowing",outlierDta);
     }else{
-        console.log("fasle whowing",saleData);
+        // console.log("fasle whowing",saleData);
     }
-
   
     const getValue = (e) => {
         let { value } = e.target
         selectvalue = value;
         if (selectvalue == "15M") {
             setTimeScale("minute")
+
         } else if (selectvalue == "1H") {
             setTimeScale("minute")
 
-
         }else if (selectvalue == "1D") {
             setTimeScale("hour")
-
 
         }  else if (selectvalue == "7D") {
             setTimeScale("day")
@@ -68,11 +65,10 @@ function MyScatterPlot() {
                         return { x: items.timestamp, y: items.price }
                     }
                     ),
-                backgroundColor: 'rgba(255, 99, 132, 1)',
+                backgroundColor: '#00FF00',
             },
         ],
     };
-
     const options = {
         data: isOutlierData?data:saleData,
         plugins: {
@@ -80,7 +76,6 @@ function MyScatterPlot() {
               display: false
             }
           },
-      
         scales: {
             x: {
                 type: 'time',
@@ -101,11 +96,19 @@ function MyScatterPlot() {
             },
         },
     };
+   
+   
+
+  
 
     const params = useParams()
     useEffect(() => {
         dispatch(Sale_RankingApi(params, selectvalue))
-    }, [isOutlierData])
+    //      setInterval(()=>{
+    //     console.log("calling after 30 seconds ")
+    //     dispatch(Sale_RankingApi(params, selectvalue))
+    // },60000)
+    }, [])
 
     return (
         <div className='mt-4' style={{ backgroundColor: '#14142B', borderRadius: '10px' }}>
@@ -123,7 +126,7 @@ function MyScatterPlot() {
                     </div>
                 </div>
                 <div className=' col-md-2 d-flex  justify-content-evenly'>
-                    <label className="form-check-label" for="flexSwitchCheckDefault">Remove Outliers</label>&nbsp;
+                    <label className="form-check-label" for="flexSwitchCheckDefault">Outliers</label>&nbsp;
                     <div className="form-check form-switch" >
                         <input className="form-check-input " type="checkbox" id="flexSwitchCheckDefault"
                         onChange={()=>setisLierData(!isOutlierData)}

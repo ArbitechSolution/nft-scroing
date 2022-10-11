@@ -17,72 +17,97 @@ tr:nth-child(even) {
     color: #fff;
 }
 .AnalysisBoardImage{
-    width: 185px;
+    width: 100%;
     height: 185px;
 }
 .text-4xl {
     font-size: 2.25rem;
     line-height: 2.5rem;
     font-weight: 700;
+    font-family: Rubik,sans-serif;
 }
 .text-sm {
-    font-size: 0.875rem;
+  font-family: Azeret Mono,monospace;
+    font-size: 0.87rem;
     line-height: 1.25rem;
+    --tw-text-opacity: 1;
+    color: rgba(209, 213, 219, var(--tw-text-opacity));
 }
 .bg-blue-860 {
     /* --tw-bg-opacity: 1; */
     background-color: rgba(19, 19, 41);
-    border-radius: 10px;
+    border-radius: 5px;
+}
+.bg-blue-8607{
+  background-color: rgba(19, 19, 41);
+    border-radius: 50px;
+    padding: 5px 11px;
 }
 .px-4 {
     padding-left: 1rem;
     padding-right: 1rem;
+    font-family: Rubik,sans-serif;
 }
 .py-0\.5 {
     padding-top: 0.125rem;
     padding-bottom: 0.125rem;
+    font-family: Rubik,sans-serif;
 }
 .border-blue-820 {
     /* --tw-border-opacity: 1; */
     border:1px solid  rgba(53, 53, 84);
+    border-radius: 4px;
+    font-family: Rubik,sans-serif;
 }
 /* .borders {
     border-width: 1px;
 } */
 .p-2 {
     padding: 0.5rem;
+    font-family: Rubik,sans-serif;
 }
 .text-gray-300 {
     --tw-text-opacity: 1;
     color: rgba(209, 213, 219, var(--tw-text-opacity));
+    font-family: Rubik,sans-serif;
 }
 
 .font-bold {
     font-weight: 700;
+    font-family: Rubik,sans-serif;
 }
 .text-xs {
     font-size: 0.75rem;
     line-height: 1rem;
+    --tw-text-opacity: 1;
+    color: rgb(197 197 224/var(--tw-text-opacity));
+    font-family: Rubik,sans-serif;
 }
 .text-xs1 {
-    font-size: 0.90rem;
+    font-size: 0.60rem;
     line-height: 1.5rem;
-    color: #fff;
+    --tw-text-opacity: 1;
+    color: rgb(197 197 224/var(--tw-text-opacity));
+    font-family: Rubik,sans-serif;
 }
 .bg-blue-86999{
-    width: 320px;
+    width: 290px;
+    font-family: Rubik,sans-serif;
 }
 .typo-body {
     font-family: Rubik,sans-serif;
     font-size: .65rem;
     line-height: 1.4rem;
+    
 }
 .text-vojta-secondary {
     --tw-text-opacity: 1;
     color: rgb(197 197 224/var(--tw-text-opacity));
+    font-family: Rubik,sans-serif;
 }
 .font-normal {
     font-weight: 400;
+    font-family: Rubik,sans-serif;
 }
 .select {
     display:flex;
@@ -110,6 +135,7 @@ tr:nth-child(even) {
     box-sizing:border-box;
     overflow:hidden;
     white-space:nowrap;
+    font-family: Rubik,sans-serif;
     /* border-radius: 8px; */
     
   }
@@ -117,11 +143,13 @@ tr:nth-child(even) {
   .option:hover {
     background:#26263E;
     /* border-radius: 10px; */
+    font-family: Rubik,sans-serif;
   }
   
   .select:focus .option {
     position:relative;
     pointer-events:all;
+    font-family: Rubik,sans-serif;
   }
  
   .chardata{
@@ -164,6 +192,7 @@ tr:nth-child(even) {
     background-color: transparent;
     transition: .25s all ease;
     pointer-events: none;
+    font-family: Rubik,sans-serif;
   }
   
   .selectFloorPrice:hover::after {
@@ -172,19 +201,23 @@ tr:nth-child(even) {
   .analysisBoardSpan{
     font-size: 12px;
     color: rgb(141 141 166);
+    font-family: Rubik,sans-serif;
   }
   .analysisBoardSpan1{
     font-size: 15px;
     font-weight: 600;
     color: rgb(141 141 166);
+    font-family: Rubik,sans-serif;
   }
   .analysisBoardSpan12{
     font-size: 14px;
     font-weight: 600;
+    font-family: Rubik,sans-serif;
   }
   .analysisBoardSpan122{
     font-size: 14px;
     font-weight: 600;
+    font-family: Rubik,sans-serif;
   }
   .row{
     --bs-gutter-x: 0rem;
@@ -197,41 +230,57 @@ tr:nth-child(even) {
     font-size: 12px;
     padding: 0px 8px;
     font-weight: 600;
+    font-family: Rubik,sans-serif;
   }
   .analysisBoardSpantraderfoollrrrr{
     color: rgb(141 141 166);
-    font-size: 15px;
+    font-family: Rubik,sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .analysisBoardSpantraderfoollrrrr1{
+    color: rgb(141 141 166);
+    font-family: Rubik,sans-serif;
+    font-size: 16px;
     font-weight: 400;
   }
   .analysisBoardSpantraderfoollr{
     color: rgb(141 141 166);
     font-size: 13px;
     font-weight: 500;
+    font-family: Rubik,sans-serif;
   }
   .analysisBoardSpantrader{
     color: rgb(141 141 166);
     font-size: 12px;
     font-weight: 600;
+    font-family: Rubik,sans-serif;
   }
   .scrollView{
-height: 730px;
+height: 830px;
 overflow-y: auto;
   }
+  .courser{
+    cursor: pointer
+  }
 .box-width{
-  width: 230px;
+  width: 250px !important;
 }
 
 .box-width-mini-chart{
-  width: 400px;
-  /* border: 2px solid red !important */
+  width: 355px !important;
+  /* height: 500px !important;
+  border: 2px solid red !important */
 } 
   .scrollView::-webkit-scrollbar {
     width: 7px;
+    font-family: Rubik,sans-serif;
   }
   
   .scrollView::-webkit-scrollbar-track {
     background-color: transparent;
     border-radius: 100px;
+    font-family: Rubik,sans-serif;
   }
   
   .scrollView::-webkit-scrollbar-thumb {
@@ -240,15 +289,16 @@ overflow-y: auto;
     border-left: 0;
     border-right: 0;
     background-color: rgb(213, 213, 215);
+    font-family: Rubik,sans-serif;
   }
   .Revealed{
     color: #6FCF97;
-    font-size: 20px;
+    font-size: 17px;
     font-weight: 600;
   }
 
   .selectFloorPriceDownAnalysisBoard{
-    
+    font-family: Rubik,sans-serif;
     appearance: none;
     outline: 0;
     border: 0;
@@ -272,6 +322,7 @@ overflow-y: auto;
       height: 2.5em;
       border-radius: .25em;
       overflow: hidden;
+      font-family: Rubik,sans-serif;
     }
     .selectFloorPriceAnalysisBoard::after {
       content: '\25BC';
@@ -283,40 +334,62 @@ overflow-y: auto;
       background-color: transparent;
       transition: .25s all ease;
       pointer-events: none;
+      font-family: Rubik,sans-serif;
     }
     
     .selectFloorPriceAnalysisBoard:hover::after {
       color: #fff;
+      font-family: Rubik,sans-serif;
     }
 
 .btnicon{
-  border: 2px solid #6B63EC;
+  border: 1px solid #6B63EC;
   color: #fff;
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 500;
-  padding: 4px 12px;
-  border-radius: 7px;
+  padding: 6px 18px;
+  border-radius: 5px;
   background-color: #1C1C33;
+  font-family: Rubik,sans-serif;
 }
 .btnicon:hover{
-  border: 2px solid #6B63EC;
+  border: 1px solid #6B63EC;
   background-color: #6B63EC;
   color: #fff;
+  font-family: Rubik,sans-serif;
  
 }
 .aTagStyle{
   color: rgb(141 141 166);
+  font-family: Rubik,sans-serif;
+  font-size: 12px;
 }
 .aTagStyle:hover{
   color: rgb(141 141 166);
   text-decoration: none;
+  font-family: Rubik,sans-serif;
 }
 .floorpriceheight{
   height: 280px !important;
 }
-/* .box-width-chart{
-  width: 715px
-} */
+.icon-color{
+  --tw-text-opacity: 1;
+    color: rgb(197 197 224/var(--tw-text-opacity));
+    font-family: Rubik,sans-serif;
+}
+.text-szzz{
+  --tw-text-opacity: 1;
+    color: rgb(197 197 224/var(--tw-text-opacity));
+    font-family: Rubik,sans-serif;
+    font-weight: 400;
+    font-size: 0.85rem;
+}
+.textSize{
+  font-size: 13px;
+}
+.box-width-chart{
+  width: 100% !important
+}
 
 
 /* .form-check input[type="checkbox"] {
@@ -324,25 +397,40 @@ overflow-y: auto;
   background-color: #92929971;
   
 } */
-
+/* .box-width-chartss{
+  width: 715px !important
+} */
+.AreaChart-width{
+  width: 150px !important;
+  height: 100px !important;
+  font-family: Rubik,sans-serif;
+}
 @media (min-width: 1900px) and (max-width: 7000px){
   .box-width-mini-chart{
-    width: 48%;
+    width: 49% !important;
     height: 400px;
+    font-family: Rubik,sans-serif;
     /* border: 2px solid red !important */
   }
   .floorpriceheight{
     height: 370px !important;
   }
   .box-width{
-    width: 270px;
+    width: 340px !important;
     /* border: 2px solid red */
   }
   .box-width-chart{
     width: 98%;
     /* border: 2px solid red */
   } 
-  
+  .scrollView{
+    height: 980px;
+    overflow-y: auto;
+      }
+      .bg-blue-86999{
+        width: 440px;
+        font-family: Rubik,sans-serif;
+    }
 }
 @media(max-width: 1390px){
   .box-width-mini-chart{
@@ -378,6 +466,7 @@ overflow-y: auto;
 .hoverColor:hover{
   background-color: rgba(64, 64, 153, 0.753);
   cursor: -webkit-grab; cursor: grab;
+  font-family: Rubik,sans-serif;
 }
 @media(max-width: 576px){
     .text-4xl {
@@ -397,16 +486,19 @@ overflow-y: auto;
     .text-sm {
       font-size: 0.750rem;
       line-height: 1.25rem;
+      font-family: Rubik,sans-serif;
   }
   .textSize{
     font-size: 14px;
+    font-family: Rubik,sans-serif;
   }
   .text-szzz{
     font-size: 15px;
     width: 90%;
+    font-family: Rubik,sans-serif;
   }
   .box-width{
-    width: 97%;
+    width: 97% !important;
   }
   .box-width-chart{
     width: 99%

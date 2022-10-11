@@ -17,6 +17,7 @@ function CollectionDetail() {
   const dispatch = useDispatch()
   const [period, setPeriod] = useState(60);
   const {collections, isLoading} = useSelector((state)=> state.Fetch_Collection_Reducer);
+  // console.log("Collections in collection details", collections)
   useEffect(() => {
       dispatch(Fetch_Collection_Api(period))
   }, [period]);
@@ -63,7 +64,7 @@ function CollectionDetail() {
                 </thead>
 
                 <tbody>
-                  {collections.map((item, index) => {
+                  {collections?.map((item, index) => {
                     return <tr key={item.id} className="hoverColor">
                       <NavLink to={`/AnalysisBoard/${item.slug} `} style={{ textDecoration: 'none', color: 'white' }} onClick={()=>window.scrollTo(0,0)}>
                       <td >

@@ -14,12 +14,14 @@ import {AiFillCopy} from "react-icons/ai"
 import {
     AreaChart,
     Area,
+    ResponsiveContainer
 } from "recharts";
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
 import AssetsForSale from "./AssetsForSale";
 import FloorPrice from "./FloorPrice";
 import copy from "copy-to-clipboard"; 
 // import SaleRanking from "./SaleRanking";
+import axios from "axios"
 import MyScatterPlot from "./ScatterPlot"
 import {AiFillCaretUp, AiFillPlusCircle} from "react-icons/ai"
 import { useParams  } from "react-router-dom";
@@ -35,6 +37,7 @@ function    AnalysisBoard() {
     const [listingData, setListingData]= useState(null)
     const params = useParams()
     const [isload,setisLoad]= useState(false)
+    const [isLoadTrades, setIsloadTrades]= useState(false)
     const [isCopy, setIsCopy] = useState("");
     const [listingDataLength, setListingDataLength]= useState(0)
     const [tradesDataArray, setTradesDataArray] = useState([])
@@ -141,33 +144,67 @@ function    AnalysisBoard() {
 const fetchApis= async()=>{
     try{
 
-        const res= await Promise.all([
-            fetch(`https://orcanftapi.net:5000/api/collection/LIstedAssets?collectionName=${params.collectionName}`,
-            {
-                headers: { "X-API-KEY": API_KEY },
-              }),
-            fetch(`https://orcanftapi.net:5000/api/collection/SaleChart?period=1h&collectionName=${params.collectionName}`,
-            {
-                headers: { "X-API-KEY": API_KEY },
-              }),
-        ])
-        const data = await Promise.all(res.map(r => r.json()))
-        setisLoad(true)
-        setListingData(data[0])
-        setListingDataLength(data[0].length)
-        data[0]?.map((items) => {
-            
-            let splittedData = items.event_date.split("T")
-            let finalSplit = splittedData[1].split("Z")
-            finalArray = [...finalArray,finalSplit[0] ] 
-          })
-        setTradesDataArray(data[1].items)
+        // const res= await Promise.all([
+        //     axios.get(`https://orcanftapi.net:5000/api/collection/LIstedAssets?collectionName=${params.collectionName}`,
+        //     {
+        //         headers: { "X-API-KEY": API_KEY },
+        //       }),
+        //       axios.get(`https://orcanftapi.net:5000/api/collection/SaleChart?period=1h&collectionName=${params.collectionName}`,
+        //     {
+        //         headers: { "X-API-KEY": API_KEY },
+        //       }),
+        // ])
+ 
+        // const data = await Promise.all(res.map(r => r))
+        // console.log("data", data[1]);
+        // setisLoad(true)
+        // setListingData(data[0].data)
+        // setListingDataLength(data[0].length)
+        // data[0]?.data?.map((items) => {
+        //     let splittedData = items.event_date.split("T")
+        //     let finalSplit = splittedData[1].split("Z")
+        //     finalArray = [...finalArray,finalSplit[0] ] 
+        //   })
+        // setTradesDataArray(data[1]?.data?.items)
+ const resForTrades = await axios.get(`https://orcanftapi.net:5000/api/collection/SaleListing?limit=50&slug=${params.collectionName}`)
+        let tradingData= resForTrades.data.result
+//  console.log("resForTrades",tradingData)
+ setTradesDataArray(tradingData)
+ setIsloadTrades(true)
+
 
 
     }catch(e){
-      console.log("Error while fetching listing and trades api",e);
+      console.log("Error while fetching  trades api",e);
     }
 }
+
+const fetchTradesApi =async()=>{
+    try{
+        const resForTrades = await axios.get(`https://orcanftapi.net:5000/api/collection/SaleListing?limit=50&slug=${params.collectionName}`)
+        let tradingData= resForTrades.data.result
+//  console.log("resForTrades",tradingData)
+        setTradesDataArray(tradingData)
+
+    }catch(e){
+        console.log("Error while Fetching tradesApi",e)
+    }
+
+}
+
+
+useEffect(() => {
+    const interval = setInterval(() => {
+    // console.log('This will run every second!');
+
+    fetchTradesApi()
+    }, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+
+
+
 
 useEffect(()=>{
     setLoad(true)
@@ -184,48 +221,48 @@ useEffect(()=>{
         </div>
       </div>:
       <div className='fluid-container ' >
-      <div className='container ' >
-          <div className="row d-flex justify-content-center text-white mt-5" >
+      <div className=' ' >
+          <div className="row d-flex justify-content-center justify-content-around  text-white mt-5" >
               <div className="col-lg-7 d-flex  justify-content-center" >
                   <div className='row d-flex justify-content-center' >
                       <div className='col-lg-3 col-11 justify-content-center ' >
                           <img src={retriveCollections?.banner_image_url} alt="banner" className="AnalysisBoardImage img-fluid" />
                           <div className="row" >
-                          <div className=" col-12 d-flex justify-content-md-between mt-2" >
+                          {/* <div className=" col-12 d-flex justify-content-md-between mt-4" >
                               <button className=" btnicon me-sm-0 me-3"><AiFillCaretUp size={15}/>&nbsp;1.5k</button>
                               <button className=" btnicon"><AiFillPlusCircle size={15}/>&nbsp;Watch</button>
-                          </div>
+                          </div> */}
                           <span className="text-center mt-2 aTagStyle">Refresh metadata</span>
                           </div>
                       </div>
                       <div className=' col-lg-9 ps-3' >
                           <div className="text-4xl font-bold" >{retriveCollections?.name}</div>
-                          <div className="flex items-center space-x-2 py-2 d-flex flex-row" >
-                              <div className="text-sm" 
+                          <div className="flex items-center space-x-2 py-2 d-flex flex-row align-items-center" >
+                              <div className="text-sm payOutAddress" 
                               > 
                                 {retriveCollections?.payout_address}</div>
-                              <AiFillCopy className={isCopy == "copy" ? "ms-2 text-primary" : "ms-2 text-light"}size={20} onClick={()=>copyToClipboard()} />
+                              <AiFillCopy className={isCopy == "copy" ? "ms-2 mt-1 text-primary courser" : "ms-2 mt-1 icon-color courser"}size={17} onClick={()=>copyToClipboard()} />
 
                               <a href="https://etherscan.io/"
                                target="_blank">
                               <img src={OutWebsite} alt="outwebsite" className="ms-2" style={{ width: "15px" }} />
                               </a>
                           </div>
-                          <div className="d-flex space-x-8  justify-content-between flex-md-row flex-column" >
-                              <div className="bg-blue-860 rounded-full px-1 pe-2 ps-2 py-1 mt-2 textSize" >Created Date : {retriveCollections?.created_date}
+                          <div className="d-flex space-x-8   flex-md-row flex-column" >
+                              <div className="bg-blue-8607  px-1 pe-2 ps-2 py-1 mt-2 textSize m-1" >Created Date : {retriveCollections?.created_date}
                               </div>
-                              <div className="bg-blue-860 rounded-full px-1 py-1 mt-2 textSize" >Total Supply : 
+                              <div className="bg-blue-8607 rounded-full px-1 py-1 mt-2 textSize m-1" >Total Supply : 
                               {totalsupply}
                               </div>
                           </div>
 
-                          <small className="mt-2 text-szzz img-fluid" >{retriveCollections?.description}</small>
+                          <p className="mt-3 text-szzz img-fluid " >{retriveCollections?.description}</p>
                       </div>
                   </div>
               </div>
-              <div className="col-lg-5  items-center mt-md-0 mt-3" >
+              <div className="col-lg-4  items-center mt-md-0 mt-3" >
                   <div className='d-flex justify-content-center flex-column'>
-                      <div className='d-flex justify-content-center  analysisBoardSpantraderfoollrrrr' >Project Info</div>
+                      <div className='d-flex justify-content-center  analysisBoardSpantraderfoollrrrr1' >Project Info</div>
                       <div className="flex space-x-3 py-2 d-flex justify-content-center" >
                           <img src={discord} alt="load" className="me-3" style={{ width: "25px" }} />
                           <img src={website} alt="load" className="" style={{ width: "25px" }} />
@@ -256,12 +293,12 @@ useEffect(()=>{
                   <div className="row d-flex justify-content-center" >
                       <div className="col-md-8 ">
                           <div className="row">
-                              <div className="col-6 align-items-center text-center" >
-                                  <div className="analysisBoardSpantraderfoollrrrr">Revealed <span className="Revealed" >&nbsp;&nbsp;100%</span></div>
+                              {/* <div className="col-5 align-items-center text-center" >
+                                  <div className="analysisBoardSpantraderfoollrrrr">Revealed <span className="Revealed" >&nbsp;100%</span></div>
                               </div>
-                              <div className="col-6 align-items-center text-center" >
-                                  <div className="analysisBoardSpantraderfoollrrrr " >Ranks Variance <span className="Revealed" >&nbsp;&nbsp;99%</span></div>
-                              </div>
+                              <div className="col-7 align-items-center text-center" >
+                                  <div className="analysisBoardSpantraderfoollrrrr " >Ranks Variance <span className="Revealed" >&nbsp;99%</span></div>
+                              </div> */}
                           </div>
                       </div>
 
@@ -272,8 +309,8 @@ useEffect(()=>{
       <div className=" mt-5 d-flex  justify-content-center " style={{ borderTop: '4px solid rgba(53, 53, 84)' }}>
 
           <div className="row text-white d-flex  justify-content-center justify-content-lg-evenly pt-3 pb-3 w-100 " >
-          <div className=" col-md-3 col-11 bg-blue-860 bg-blue-86999   p-1  mt-3">
-                  <div className="row d-flex justify-content-between" >
+          <div className=" col-md-3 col-11 bg-blue-860 bg-blue-86999   p-2  mt-3 ">
+                  <div className="row d-flex justify-content-between " >
                       <div className="col-sm-5 col-6" >
                           <div className="text-xs text-gray-300 font-bold">Floor Price</div>
                           <div className="space-x-1"> <span className="fs-6 fw-bold">0.015</span><span className="text-sm font-bold">ETH</span></div>
@@ -281,9 +318,11 @@ useEffect(()=>{
                       </div>
                       <div className=" col-sm-7 col-6"  >
                           <div className="text-xs text-gray-300">Weekly growth</div>
+                          <ResponsiveContainer
+                              width="98%"
+                              height={70}>
                           <AreaChart
-                              width={150}
-                              height={50}
+                          
                               data={data}
                               margin={{
                                   top: 10,
@@ -300,6 +339,7 @@ useEffect(()=>{
                               </defs>
                               <Area type="monotone" dataKey="avgPrice" stroke="#82ca9d" fillOpacity={1} fill="url(#colorPv)" strokeWidth={2} />
                           </AreaChart>
+                          </ResponsiveContainer>
                           <div className="d-flex justify-content-between text-xs1">
                               <div>7d ago</div>
                               <div>now</div>
@@ -307,7 +347,7 @@ useEffect(()=>{
                       </div>
                   </div>
               </div>          
-              <div className=" col-md-3 col-11 bg-blue-860 bg-blue-86999  p-3  mt-3">
+              <div className=" col-md-3 col-11 bg-blue-860 bg-blue-86999  p-2  mt-3">
                   <div className="row d-flex" >
                       <div className="col-sm-5 col-6" >
                           <div className="text-xs text-gray-300 font-bold">Listed Assets</div>
@@ -316,9 +356,11 @@ useEffect(()=>{
                       </div>
                       <div className=" col-sm-7 col-6" >
                           <div className="text-xs text-gray-300">Weekly growth</div>
+                          <ResponsiveContainer
+                              width="98%"
+                              height={70}>
                           <AreaChart
-                              width={150}
-                              height={50}
+                             
                               data={data}
                               margin={{
                                   top: 10,
@@ -335,6 +377,7 @@ useEffect(()=>{
                               </defs>
                               <Area type="monotone" dataKey="" stroke="#82ca9d" fillOpacity={1} fill="url(#colorPv)" strokeWidth={2} />
                           </AreaChart>
+                          </ResponsiveContainer>
                           <div className="d-flex justify-content-between text-xs1">
                               <div>7d ago</div>
                               <div>now</div>
@@ -342,7 +385,7 @@ useEffect(()=>{
                       </div>
                   </div>
               </div>
-              <div className=" col-md-3 col-11 bg-blue-860 bg-blue-86999  p-3  mt-3">
+              <div className=" col-md-3 col-11 bg-blue-860 bg-blue-86999  p-2  mt-3">
                   <div className="row d-flex" >
                       <div className="col-sm-5 col-6" >
                           <div className="text-xs text-gray-300 font-bold">24h Volume</div>
@@ -351,9 +394,10 @@ useEffect(()=>{
                       </div>
                       <div className=" col-sm-7 col-6" >
                           <div className="text-xs text-gray-300">24h growth</div>
+                          <ResponsiveContainer
+                              width="98%"
+                              height={70}>
                           <AreaChart
-                              width={150}
-                              height={50}
                               data={data}
                               margin={{
                                   top: 10,
@@ -370,6 +414,7 @@ useEffect(()=>{
                               </defs>
                               <Area type="monotone" dataKey="sale" stroke="#990033" fillOpacity={1} fill="url(#colorPv)" strokeWidth={2} />
                           </AreaChart>
+                          </ResponsiveContainer>
                           <div className="d-flex justify-content-between text-xs1">
                               <div>7d ago</div>
                               <div>now</div>
@@ -377,7 +422,7 @@ useEffect(()=>{
                       </div>
                   </div>
               </div>
-              <div className=" col-md-3 col-11 bg-blue-860 bg-blue-86999  p-3  mt-3">
+              <div className=" col-md-3 col-11 bg-blue-860 bg-blue-86999  p-2  mt-3">
                   <div className="row d-flex" >
                       <div className="col-sm-5 col-6" >
                           <div className="text-xs text-gray-300 font-bold">24h Trades</div>
@@ -386,9 +431,11 @@ useEffect(()=>{
                       </div>
                       <div className=" col-sm-7 col-6" >
                           <div className="text-xs text-gray-300">24h growth</div>
+                          <ResponsiveContainer
+                          width="98%"
+                          height={70}>
                           <AreaChart
-                              width={150}
-                              height={50}
+                             
                               data={data}
                               margin={{
                                   top: 10,
@@ -405,6 +452,7 @@ useEffect(()=>{
                               </defs>
                               <Area type="monotone" dataKey="vol" stroke="#990033" fillOpacity={1} fill="url(#colorPv)" strokeWidth={2} />
                           </AreaChart>
+                          </ResponsiveContainer>
                           <div className="d-flex justify-content-between text-xs1">
                               <div>7d ago</div>
                               <div>now</div>
@@ -416,9 +464,9 @@ useEffect(()=>{
 
       </div>
 
-      <div className=" d-flex  justify-content-center " >
-          <div className="row text-white d-flex  justify-content-center  pt-3 pb-3 w-100 ">
-              <div className="col-lg-2 col-11 box-width" >
+      {/* <div className=" d-flex  justify-content-center " > */}
+          <div className="row text-white d-flex  justify-content-center justify-content-around pt-3 pb-3 w-100 ">
+              <div className="col-lg-2 col-11 box-width " >
                   <div className="row d-flex  justify-content-between">
                       <div className="col-2 d-flex align-items-center " >
                           <h6>Listings</h6>&nbsp;&nbsp;
@@ -436,8 +484,8 @@ useEffect(()=>{
                          
                       </div>
                   </div>
-                  <div className="scrollView">
-                    { isload?
+                  <div  className="scrollView ">
+                    {/* { isload?
                         listingData?.map((items,index)=>{
                             let splittedData = items.event_date.split("T")
                             let finalSplit = splittedData[1].split("Z")
@@ -446,12 +494,12 @@ useEffect(()=>{
                                 <div key={index} className="row d-flex justify-content-start mt-2" style={{ backgroundColor: '#1B1B36', boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px', borderRadius: '5px' }}>
                                 <div className="col-3 d-flex justify-content-start" >
                                     <div className="position-relative d-flex justify-content-start" >
-                                        <img src={items.image} className=" position-relative" width={55} style={{borderRadius: "5px"}}/>
-                                        <span className="position-absolute" style={{ top: "35px", left: '8px', fontSize: '13px' }}>#{items.token_id}</span>
+                                        <img src={items?.image} className=" position-relative" width={55} style={{borderRadius: "5px"}}/>
+                                        <span className="position-absolute" style={{ top: "35px", left: '8px', fontSize: '13px' }}>#{items?.token_id}</span>
                                     </div>
                                     <div className="col-8 align-items-center flex-column ms-1" >
                                         <div className="col-12 " >
-                                            <span className="analysisBoardSpan text-white">#{items.token_id}</span>
+                                            <span className="analysisBoardSpan text-white">#{items?.token_id}</span>
        
                                         </div>
                                     </div>
@@ -463,46 +511,45 @@ useEffect(()=>{
                                         
                                         finalSplit[0]
                                         } &nbsp;</span>&nbsp;&nbsp;
-                                        <span className="analysisBoardSpan12 text-white"><img src={ether} width="8px" /> {parseFloat(items.event_price)?.toFixed(3)}</span>
+                                        <span className="analysisBoardSpan12 text-white"><img src={ether} width="8px" /> {parseFloat(items?.event_price)?.toFixed(3)}</span>
                                     </div>
                                     <div className="me-2">
                                         <img src={opensea} width="18px" />
                                         &nbsp;&nbsp;
-                                        <button onClick={()=>buyNft(items.token_id,index)} className=" btnBuy btn-sm" ><BsLightningChargeFill color="white" size={12} /> Buy</button>
+                                        <button onClick={()=>buyNft(items?.token_id,index)} className=" btnBuy btn-sm" ><BsLightningChargeFill color="white" size={12} /> Buy</button>
                                     </div>
                                 </div>
                             </div>
 
                             )
                         })
-                        : <SkeletonTheme baseColor="#202020" highlightColor="#444">
+                        :  */}
+                        <SkeletonTheme baseColor="#202020" highlightColor="#444">
         <p>
             <Skeleton count={3} />
         </p>
     </SkeletonTheme> 
-                    }
+                    {/* } */}
                   </div>
               </div>    
-              <div className="col-lg-8 ">
-                  <div className="row justify-content-around" >
-                      <div className="col-lg-5 col-11 mt-3 box-width-mini-chart">
-                          
+              <div className="col-lg-7  ">
+                  <div className="row justify-content-between" >
+                      <div className="col-lg-5 col-11 mt-3 box-width-mini-chart ">
                           <AssetsForSale />
                       </div>
-                      <div className="col-lg-5 col-11 mt-3 box-width-mini-chart">
+                      <div className="col-lg-5 col-11 mt-3 box-width-mini-chart ">
                           <FloorPrice />
                       </div>
                   </div>
                   <div className="row justify-content-center">
-                  <div className="col-lg-11 col-11 box-width-chart">
-                          <div className="text-white text-xl font-bold text-center mb-2 mt-4">Sales/Ranking</div>
-                          {/* <SaleRanking /> */}
+                  <div className="col-lg-5 col-12 box-width-chart ">
+                          <div className="text-white text-xl font-bold text-center mb-2 mt-2">Sales/Ranking</div>
+                        
                           <MyScatterPlot/>
                       </div>
                   </div>
-                      
               </div>
-              <div className="col-lg-2 col-11 box-width" >
+              <div className="col-lg-2 col-11 box-width " >
                   <div className="row d-flex  justify-content-between">
                       <div className="col-8 d-flex align-items-center " >
                           <h5>Trades</h5>&nbsp;&nbsp;
@@ -510,10 +557,25 @@ useEffect(()=>{
                       </div>
                   </div>
                   <div className="scrollView">
-                    { isload?
+                    {
+                     isLoadTrades?
                         tradesDataArray?.map((items,index)=>{
-                            let splittedData = items.event_date.split("T")
-                            let finalSplit = splittedData[1].split("Z")
+                            let currentTime = new Date().getTime();
+
+                            // let time = new Date(items.timestamp).toLocaleTimeString('en-US',{
+                            //     hour: '2-digit',
+                            //     minute: '2-digit',
+                            // })
+                            let timePassed = parseInt(currentTime)-parseInt(items.timestamp)
+                            // let timeToDisplayHours = new Date(timePassed).getHours()
+                            let timeToDisplayMins = new Date(timePassed).getMinutes()
+
+
+                            // console.log("items into the map", timeToDisplayMins)
+
+                            
+                            // let splittedData = items.event_date.split("T")
+                            // let finalSplit = splittedData[1].split("Z")
                             return(
                                 <div key={index} className="row d-flex justify-content-between mt-2" style={{ backgroundColor: '#131329',boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px', borderRadius: '5px', borderRight: '4px solid #9190AD' }}>
                                 <div className="col-4 d-flex justify-content-start"  >
@@ -523,14 +585,14 @@ useEffect(()=>{
                                     </div>
                                     <div className="col-8 flex-column ms-2 mt-1" >
                                         <span className="analysisBoardSpantrader mt-2 ">#{items.token_id}</span><br />
-                                        <span className="analysisBoardSpantrader mt-2 ">{finalSplit[0]}</span>
+                                        <span className="analysisBoardSpantrader mt-2 ">{timeToDisplayMins}m ago</span>
                                     </div>
                                 </div>
                                 <div className="col-6 d-flex justify-content-evenly ">
                                     <div className="" >
                                         <span className="analysisBoardSpantrader ">Sold For</span>
                                         <br />
-                                        <span className="analysisBoardSpan122 text-white"><img src={ether} width="8px" /> {parseFloat(items.event_price)?.toFixed(3)}</span>
+                                        <span className="analysisBoardSpan122 text-white"><img src={ether} width="8px" /> {parseFloat(items.price)?.toFixed(3)}</span>
                                     </div>
                                     <div className="d-flex flex-column  align-items-center justify-content-evenly" >
                                         <span className="analysisBoardSpantrader " >Market</span>
@@ -541,7 +603,8 @@ useEffect(()=>{
       
                             </div>
                             )
-                        })  : <SkeletonTheme baseColor="#202020" highlightColor="#444">
+                        }) 
+                         : <SkeletonTheme baseColor="#202020" highlightColor="#444">
         <p>
             <Skeleton count={3} />
         </p>
@@ -553,7 +616,7 @@ useEffect(()=>{
               </div>
 
           </div>
-      </div>
+      {/* </div> */}
   </div>
     }
       </> 

@@ -7,6 +7,7 @@ import {Floor_Price_Reducer} from "./reducer/Floor_Price_Reducer";
 import {Fetch_Retrive_Collection_Reducer} from "./reducer/fetchRetriveCollection";
 import {Fetch_Collection_Stats_Reducer} from './reducer/fetchCollectionStats'
 import {GET_CURRENT_LIST_REDUCER} from './reducer/GetCurrentListing'
+import {fetch_Auto_SaleRanking} from './reducer/fetchAutoSaleRanking'
 export const rootReducers = combineReducers({
     Sale_RankingReducer,
     Fetch_Collection_Reducer,
@@ -15,6 +16,7 @@ export const rootReducers = combineReducers({
     Floor_Price_Reducer,
     Fetch_Retrive_Collection_Reducer,
     Fetch_Collection_Stats_Reducer,
-    GET_CURRENT_LIST_REDUCER
+    GET_CURRENT_LIST_REDUCER,
+    fetch_Auto_SaleRanking
 })
 

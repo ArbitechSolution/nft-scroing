@@ -24,7 +24,7 @@ function CollapsibleExample() {
     } 
   }
   return (
-    <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+    <Navbar collapseOnSelect expand="lg" className='backgroundColor'  variant="dark">
       <div className='container-fluid'>
         <Navbar.Brand href="#">
             <img src={logo} alt="logo" className="rounded-circle border border-5"  
@@ -43,7 +43,7 @@ function CollapsibleExample() {
           </Nav>
           <Nav>
             <Nav.Link href="#"><FontAwesomeIcon icon={faGasPump}  className="text-info me-2"/>5.18</Nav.Link>
-           <button onClick={()=>connectWallet()} className='btn btn-dark border-4 border-primary rounded-5 py-2 px-4'>{account}
+           <button onClick={()=>connectWallet()} className='btn btn-dark border-4 border-primary rounded-5 py-1 px-4'>{account}
            </button>
           </Nav>
         </Navbar.Collapse>

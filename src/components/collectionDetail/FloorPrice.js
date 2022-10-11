@@ -17,13 +17,14 @@ function FloorPrice() {
     
     const params = useParams()
     const dispatch = useDispatch()
-  let finalArray = []
+  let finalArrayOne = []
 
   const {floorData,isLoading} = useSelector((state)=>state.Floor_Price_Reducer);
-  console.log("floorData", floorData)
-    floorData?.map((items) => { 
+//   console.log("floor Data", floorData.result)
+  let finalArray = floorData.result
+    finalArray?.map((items) => { 
         let splittedData = items.timestamp.split(" ")
-        finalArray = [...finalArray, { "price": items.floor_price, "date": splittedData[1]}]
+        finalArrayOne = [...finalArrayOne, { "price": items.floor_price, "date": splittedData[1]}]
       })
 
 let selectvalue ="30D"
@@ -55,8 +56,8 @@ dispatch(Floor_Price_Api(params, selectvalue))
             </div>
             {
                 isLoading?
-                <ResponsiveContainer width="99%" className="floorpriceheight">
-                <AreaChart   data={finalArray}
+                <ResponsiveContainer width="100%" className="floorpriceheight">
+                <AreaChart   data={finalArrayOne}
                     margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                     <defs>
                         <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
@@ -72,7 +73,7 @@ dispatch(Floor_Price_Api(params, selectvalue))
                 </AreaChart>
                 </ResponsiveContainer>:<SkeletonTheme baseColor="#202020" highlightColor="#444">
         <p>
-            <Skeleton count={12} />
+            <Skeleton count={14} />
         </p>
     </SkeletonTheme>
             }

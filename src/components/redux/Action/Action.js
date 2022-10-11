@@ -1,11 +1,16 @@
 import {SALE_RANKING, FETCH_cOLLECTON,GET_CURRENT_LIST, ANALYSIS_BOARD, ASSETS_FOR_SALE, FLOOR_PRICE} from "../Type"
 import axios from "axios"
 import moment from "moment";
-
+let timeScaleForAutoCall ;
+let collectionNameForAutoCall; 
 const API_KEY = process.env.REACT_APP_API_KEY;
 export const Sale_RankingApi = (params, selectvalue) => async(dispatch)=>{
     try{
+
   let finalArray = []
+  timeScaleForAutoCall =selectvalue;
+  collectionNameForAutoCall = params.collectionName
+
         dispatch({
             type: SALE_RANKING,
             payload: {
@@ -15,15 +20,13 @@ export const Sale_RankingApi = (params, selectvalue) => async(dispatch)=>{
                 outlierDta :[]
             }
            });
-           let {data} =await axios.get(`https://nft-scoring.herokuapp.com/v2/saleListing?timestamp=${selectvalue}&collection_slug=${params.collectionName}`)
-
-        //    let {data} =await axios.get(`http://localhost:7070/v2/saleListing?timestamp=${selectvalue}&collection_slug=${params.collectionName}`)
+        //    oldurl =https://nft-scoring.herokuapp.com/v2/saleListing?timestamp=${selectvalue}&collection_slug=${params.collectionName}
+        // console.log('This will run every second Action!',params.collectionName);
+          
+        let {data} =await axios.get(`https://orcanftapi.net:5000/api/collection/SaleListing?period=${selectvalue}&slug=${params.collectionName}`)
+        // console.log('This will run every second Action!',params.collectionName);
            let {result} = data
         //    console.log("result", result);
-        //    let res = await axios.get(`https://api.nftinit.io/api/sale_chart/?tc=true&tn=true&get_listings=true&period=${selectvalue}&slug=${params.collectionName}`)
-        //    console.log("res", res.data);
-//    let res = await axios.get(`https://orcanftapi.net:5000/api/collection/SaleChart?period=${selectvalue}&collectionName=${params.collectionName}`)
-//    let typicalData = res?.data?.items;
 
 dispatch({
     type: SALE_RANKING,
@@ -81,7 +84,74 @@ dispatch({
     }
 
 }
+// export const Sale_RankingApi_AutoCall = ( params, selectvalue) => async(dispatch)=>{
+    
+   
 
+//     try{
+
+//         let finalArray = []
+//         timeScaleForAutoCall =selectvalue;
+//         collectionNameForAutoCall = params.collectionName
+      
+           
+//             //   console.log('This will run every second Action!',params.collectionName);
+                
+//               let {data} =await axios.get(`https://orcanftapi.net:5000/api/collection/SaleListing?period=${selectvalue}&slug=${params.collectionName}`)
+//             //   console.log('This will run every second Action!',params.collectionName);
+      
+//                  let {result} = data
+//                  console.log("result", result);
+             
+      
+//         let values = result?.sort( function(a, b) {
+//           return a.price - b.price;
+//         });
+//         var q1 = values[Math.floor((values.length / 4))];
+//         var q3 = values[Math.ceil((values.length * (3 / 4)))];
+//         var iqr = q3?.price - q1?.price;
+//         var maxValue = q3?.price + iqr*1.5;
+//         var minValue = q1?.price - iqr*1.5;
+//         let filteredData = values.filter(function(x) {
+//           if(x.price <= maxValue && x.price >= minValue){
+//             return x;
+//           }
+//         });
+//          dispatch({
+//           type: SALE_RANKING,
+//           payload: {
+//               data:result,
+//               isLoading:false,
+//               filterdta:finalArray,
+//               outlierDta :filteredData
+      
+//           }
+//          })
+//           }catch(error){
+//               console.log("error while getting saleRanking api ", error);
+//           }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// }
 export const Fetch_Collection_Api = (period)=>async(dispatch)=>{
     try{
         dispatch({
@@ -92,10 +162,11 @@ export const Fetch_Collection_Api = (period)=>async(dispatch)=>{
             }
            })
 let res = await axios.get(`https://orcanftapi.net:5000/api/collection/Trending?period=${period}`)
+// console.log("Res in action Fetch_Collection_Api",res.data.result)
        dispatch({
         type: FETCH_cOLLECTON,
         payload: {
-            data:res.data,
+            data:res.data.result,
             isLoading:false
         }
        })
