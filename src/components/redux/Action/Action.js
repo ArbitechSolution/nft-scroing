@@ -4,6 +4,11 @@ import moment from "moment";
 let timeScaleForAutoCall ;
 let collectionNameForAutoCall; 
 const API_KEY = process.env.REACT_APP_API_KEY;
+const Base_Url=process.env.REACT_APP_BASE_URL;
+// console.log("Base Url is ", API_KEY)
+// console.log("Base Url is ", Base_Url)
+
+
 export const Sale_RankingApi = (params, selectvalue) => async(dispatch)=>{
     try{
 
@@ -23,7 +28,7 @@ export const Sale_RankingApi = (params, selectvalue) => async(dispatch)=>{
         //    oldurl =https://nft-scoring.herokuapp.com/v2/saleListing?timestamp=${selectvalue}&collection_slug=${params.collectionName}
         // console.log('This will run every second Action!',params.collectionName);
           
-        let {data} =await axios.get(`https://orcanftapi.net:5000/api/collection/SaleListing?period=${selectvalue}&slug=${params.collectionName}`)
+        let {data} =await axios.get(`${Base_Url}/SaleListing?period=${selectvalue}&slug=${params.collectionName}`)
         // console.log('This will run every second Action!',params.collectionName);
            let {result} = data
         //    console.log("result", result);
@@ -131,26 +136,6 @@ dispatch({
 //               console.log("error while getting saleRanking api ", error);
 //           }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // }
 export const Fetch_Collection_Api = (period)=>async(dispatch)=>{
     try{
@@ -161,7 +146,7 @@ export const Fetch_Collection_Api = (period)=>async(dispatch)=>{
                 isLoading:true
             }
            })
-let res = await axios.get(`https://orcanftapi.net:5000/api/collection/Trending?period=${period}`)
+let res = await axios.get(`${Base_Url}/Trending?period=${period}`)
 // console.log("Res in action Fetch_Collection_Api",res.data.result)
        dispatch({
         type: FETCH_cOLLECTON,
@@ -174,7 +159,8 @@ let res = await axios.get(`https://orcanftapi.net:5000/api/collection/Trending?p
         console.log("error", error);
     }
 }
-export const AssetsForSale_Api = (params)=>async(dispatch)=>{
+export const AssetsForSale_Api = (params,selectvalue)=>async(dispatch)=>{
+    // console.log("Selected Value for active listing graph", selectvalue)
     try{
         
         dispatch({
@@ -185,12 +171,13 @@ export const AssetsForSale_Api = (params)=>async(dispatch)=>{
             }
            
         })
-        let res = await axios.get(`https://orcanftapi.net:5000/api/collection/ListedAssets?collectionName=${params.collectionName}`)
+        let res = await axios.get(`${Base_Url}/ListedData?limit=50&slug=${params.collectionName}&period=${selectvalue}`)
+        // console.log("response fo the listing genesis",res.data.result)
      
         dispatch({
             type: ASSETS_FOR_SALE,
             payload: {
-                data:res?.data,
+                data:res?.data.result,
                 isLoading:true
             }
            
@@ -247,7 +234,7 @@ export const Floor_Price_Api = (params,selectvalue)=>async(dispatch)=>{
 
         }
         
-        let res = await axios.get(`https://orcanftapi.net:5000/api/collection/FloorPrice?timestamp=${valTobepassed}&collectionName=${params.collectionName}`)
+        let res = await axios.get(`${Base_Url}/FloorPrice?timestamp=${valTobepassed}&collectionName=${params.collectionName}`)
         
         dispatch({
             type: FLOOR_PRICE,
@@ -358,7 +345,7 @@ export const fetchCurrentListing=(params) => async (dispatch)=>{
                 isLoading:true
             }
         })
-        let res =await axios.get(`https://orcanftapi.net:5000/api/collection/LIstedAssets?collectionName=kryptic-kids`,
+        let res =await axios.get(`ListedData/LIstedAssets?collectionName=kryptic-kids`,
         {
             headers: { "X-API-KEY": API_KEY },
           }

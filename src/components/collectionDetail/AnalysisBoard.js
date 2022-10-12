@@ -30,14 +30,15 @@ import {FetchAnalysis_Board_Api, fetch_retrive_collection, fetch_collection_stat
 import { loadWeb3 } from "../api/api";
 import { toast } from 'react-toastify';
 const API_KEY = process.env.REACT_APP_API_KEY || "";
-
+const Base_Url=process.env.REACT_APP_BASE_URL;
 
 function    AnalysisBoard() {
+    // console.log("Base Url is ", Base_Url)
     const [load,setLoad] = useState(true)
     const [listingData, setListingData]= useState(null)
     const params = useParams()
     const [isload,setisLoad]= useState(false)
-    const [isLoadTrades, setIsloadTrades]= useState(false)
+    // const [isLoadTrades, setIsloadTrades]= useState(false)
     const [isCopy, setIsCopy] = useState("");
     const [listingDataLength, setListingDataLength]= useState(0)
     const [tradesDataArray, setTradesDataArray] = useState([])
@@ -144,33 +145,32 @@ function    AnalysisBoard() {
 const fetchApis= async()=>{
     try{
 
-        // const res= await Promise.all([
-        //     axios.get(`https://orcanftapi.net:5000/api/collection/LIstedAssets?collectionName=${params.collectionName}`,
-        //     {
-        //         headers: { "X-API-KEY": API_KEY },
-        //       }),
-        //       axios.get(`https://orcanftapi.net:5000/api/collection/SaleChart?period=1h&collectionName=${params.collectionName}`,
-        //     {
-        //         headers: { "X-API-KEY": API_KEY },
-        //       }),
-        // ])
+        const res= await Promise.all([
+            axios.get(`${Base_Url}/ListedData?limit=50&slug=${params.collectionName}`),
+           axios.get(`${Base_Url}/SaleListing?limit=50&slug=${params.collectionName}`)
+        ])
+
  
-        // const data = await Promise.all(res.map(r => r))
-        // console.log("data", data[1]);
-        // setisLoad(true)
-        // setListingData(data[0].data)
-        // setListingDataLength(data[0].length)
+        const data = await Promise.all(res.map(r => r))
+        let apiListingData = data[0].data.result;
+        let tradingData = data[1].data.result;
+        // console.log("resForTrades apiListingData",apiListingData)
+        // console.log("resForTrades tradingData",tradingData)
+
+        setTradesDataArray(tradingData)
+
+        setListingData(apiListingData)
+        setListingDataLength(apiListingData.length)
         // data[0]?.data?.map((items) => {
         //     let splittedData = items.event_date.split("T")
         //     let finalSplit = splittedData[1].split("Z")
         //     finalArray = [...finalArray,finalSplit[0] ] 
         //   })
         // setTradesDataArray(data[1]?.data?.items)
- const resForTrades = await axios.get(`https://orcanftapi.net:5000/api/collection/SaleListing?limit=50&slug=${params.collectionName}`)
-        let tradingData= resForTrades.data.result
-//  console.log("resForTrades",tradingData)
- setTradesDataArray(tradingData)
- setIsloadTrades(true)
+//  const resForTrades = await axios.get(`https://orcanftapi.net:5000/api/collection/SaleListing?limit=50&slug=${params.collectionName}`)
+        // let tradingData= resForTrades.data.result
+//  setIsloadTrades(true)
+setisLoad(true)
 
 
 
@@ -181,13 +181,23 @@ const fetchApis= async()=>{
 
 const fetchTradesApi =async()=>{
     try{
-        const resForTrades = await axios.get(`https://orcanftapi.net:5000/api/collection/SaleListing?limit=50&slug=${params.collectionName}`)
-        let tradingData= resForTrades.data.result
-//  console.log("resForTrades",tradingData)
+        const res= await Promise.all([
+            axios.get(`${Base_Url}/ListedData?limit=50&slug=${params.collectionName}`),
+           axios.get(`${Base_Url}/SaleListing?limit=50&slug=${params.collectionName}`)
+        ])
+        const data = await Promise.all(res.map(r => r))
+        let apiListingData = data[0].data.result;
+        let tradingData = data[1].data.result;
+        // console.log("resForTrades apiListingData",apiListingData)
+        // console.log("resForTrades tradingData",tradingData)
+
         setTradesDataArray(tradingData)
 
+        setListingData(apiListingData)
+        setListingDataLength(apiListingData.length)
+
     }catch(e){
-        console.log("Error while Fetching tradesApi",e)
+        console.log("Error while Fetching Apis",e)
     }
 
 }
@@ -195,7 +205,6 @@ const fetchTradesApi =async()=>{
 
 useEffect(() => {
     const interval = setInterval(() => {
-    // console.log('This will run every second!');
 
     fetchTradesApi()
     }, 30000);
@@ -485,16 +494,19 @@ useEffect(()=>{
                       </div>
                   </div>
                   <div  className="scrollView ">
-                    {/* { isload?
+                    { isload?
                         listingData?.map((items,index)=>{
-                            let splittedData = items.event_date.split("T")
-                            let finalSplit = splittedData[1].split("Z")
+                        //   console.log("items into the map",items)
+                          let currentTime = new Date().getTime();
+
+                          let timePassed = parseInt(currentTime)-parseInt(items.timestamp)
+                          let timeToDisplayMins = new Date(timePassed).getMinutes()
                             return(
                                 
                                 <div key={index} className="row d-flex justify-content-start mt-2" style={{ backgroundColor: '#1B1B36', boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px', borderRadius: '5px' }}>
                                 <div className="col-3 d-flex justify-content-start" >
                                     <div className="position-relative d-flex justify-content-start" >
-                                        <img src={items?.image} className=" position-relative" width={55} style={{borderRadius: "5px"}}/>
+                                        <img src={items?.image_url} className=" position-relative" width={55} style={{borderRadius: "5px"}}/>
                                         <span className="position-absolute" style={{ top: "35px", left: '8px', fontSize: '13px' }}>#{items?.token_id}</span>
                                     </div>
                                     <div className="col-8 align-items-center flex-column ms-1" >
@@ -508,10 +520,9 @@ useEffect(()=>{
                                     
                                     <div className="align-items-center me-2" >
                                         <span className="analysisBoardSpan"> {
-                                        
-                                        finalSplit[0]
-                                        } &nbsp;</span>&nbsp;&nbsp;
-                                        <span className="analysisBoardSpan12 text-white"><img src={ether} width="8px" /> {parseFloat(items?.event_price)?.toFixed(3)}</span>
+                                        timeToDisplayMins
+                                        }m ago &nbsp;</span>&nbsp;&nbsp;
+                                        <span className="analysisBoardSpan12 text-white"><img src={ether} width="8px" /> {parseFloat(items?.price)?.toFixed(3)}</span>
                                     </div>
                                     <div className="me-2">
                                         <img src={opensea} width="18px" />
@@ -523,13 +534,13 @@ useEffect(()=>{
 
                             )
                         })
-                        :  */}
+                        : 
                         <SkeletonTheme baseColor="#202020" highlightColor="#444">
         <p>
             <Skeleton count={3} />
         </p>
     </SkeletonTheme> 
-                    {/* } */}
+                    }
                   </div>
               </div>    
               <div className="col-lg-7  ">
@@ -558,7 +569,7 @@ useEffect(()=>{
                   </div>
                   <div className="scrollView">
                     {
-                     isLoadTrades?
+                     isload?
                         tradesDataArray?.map((items,index)=>{
                             let currentTime = new Date().getTime();
 
