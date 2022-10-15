@@ -247,11 +247,9 @@ useEffect(()=>{
                       <div className=' col-lg-9 ps-3' >
                           <div className="text-4xl font-bold" >{retriveCollections?.name}</div>
                           <div className="flex items-center space-x-2 py-2 d-flex flex-row align-items-center" >
-                              <div className="text-sm payOutAddress" 
-                              > 
+                              <div className="text-sm payOutAddress"> 
                                 {retriveCollections?.payout_address}</div>
                               <AiFillCopy className={isCopy == "copy" ? "ms-2 mt-1 text-primary courser" : "ms-2 mt-1 icon-color courser"}size={17} onClick={()=>copyToClipboard()} />
-
                               <a href="https://etherscan.io/"
                                target="_blank">
                               <img src={OutWebsite} alt="outwebsite" className="ms-2" style={{ width: "15px" }} />
@@ -496,11 +494,24 @@ useEffect(()=>{
                   <div  className="scrollView ">
                     { isload?
                         listingData?.map((items,index)=>{
-                        //   console.log("items into the map",items)
+                            let finalTimeToDisplay="";
                           let currentTime = new Date().getTime();
-
                           let timePassed = parseInt(currentTime)-parseInt(items.timestamp)
-                          let timeToDisplayMins = new Date(timePassed).getMinutes()
+                          let secondsFromTimeStamp=Math.floor(timePassed/1000)
+                          let MinsFromTimeStamp=Math.floor(secondsFromTimeStamp/60)
+                          if(parseInt(MinsFromTimeStamp)>60){
+                              let hoursFromTimeStamp = Math.floor(MinsFromTimeStamp/60)
+                              if (hoursFromTimeStamp>24){
+                                let daysFromTimeStamp =Math.floor(hoursFromTimeStamp/24);
+                                finalTimeToDisplay =`${daysFromTimeStamp}d`
+                              }else{
+                                finalTimeToDisplay =`${hoursFromTimeStamp}h`
+                              }
+                          }else{
+                            finalTimeToDisplay =`${MinsFromTimeStamp}m`
+                          }
+
+                        //   let timeToDisplayMins = new Date(timePassed).getMinutes()
                             return(
                                 
                                 <div key={index} className="row d-flex justify-content-start mt-2" style={{ backgroundColor: '#1B1B36', boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px', borderRadius: '5px' }}>
@@ -520,8 +531,8 @@ useEffect(()=>{
                                     
                                     <div className="align-items-center me-2" >
                                         <span className="analysisBoardSpan"> {
-                                        timeToDisplayMins
-                                        }m ago &nbsp;</span>&nbsp;&nbsp;
+                                        finalTimeToDisplay
+                                        } ago &nbsp;</span>&nbsp;&nbsp;
                                         <span className="analysisBoardSpan12 text-white"><img src={ether} width="8px" /> {parseFloat(items?.price)?.toFixed(3)}</span>
                                     </div>
                                     <div className="me-2">
@@ -554,7 +565,6 @@ useEffect(()=>{
                   </div>
                   <div className="row justify-content-center">
                   <div className="col-lg-5 col-12 box-width-chart ">
-                          <div className="text-white text-xl font-bold text-center mb-2 mt-2">Sales/Ranking</div>
                         
                           <MyScatterPlot/>
                       </div>
@@ -571,22 +581,25 @@ useEffect(()=>{
                     {
                      isload?
                         tradesDataArray?.map((items,index)=>{
-                            let currentTime = new Date().getTime();
-
-                            // let time = new Date(items.timestamp).toLocaleTimeString('en-US',{
-                            //     hour: '2-digit',
-                            //     minute: '2-digit',
-                            // })
-                            let timePassed = parseInt(currentTime)-parseInt(items.timestamp)
-                            // let timeToDisplayHours = new Date(timePassed).getHours()
-                            let timeToDisplayMins = new Date(timePassed).getMinutes()
-
-
-                            // console.log("items into the map", timeToDisplayMins)
-
-                            
-                            // let splittedData = items.event_date.split("T")
-                            // let finalSplit = splittedData[1].split("Z")
+                            let finalTimeToDisplay="";
+                            //   console.log("items into the map",items)
+                              let currentTime = new Date().getTime();
+                              let timePassed = parseInt(currentTime)-parseInt(items.timestamp)
+                              let secondsFromTimeStamp=Math.floor(timePassed/1000)
+                              let MinsFromTimeStamp=Math.floor(secondsFromTimeStamp/60)
+                              console.log("Time After divided by 60", MinsFromTimeStamp);
+                              if(parseInt(MinsFromTimeStamp)>60){
+                                  let hoursFromTimeStamp = Math.floor(MinsFromTimeStamp/60)
+                                  if (hoursFromTimeStamp>24){
+                                    let daysFromTimeStamp =Math.floor(hoursFromTimeStamp/24);
+                                    finalTimeToDisplay =`${daysFromTimeStamp}d`
+                                  }else{
+                                    finalTimeToDisplay =`${hoursFromTimeStamp}h`
+                                  }
+                              }else{
+                                finalTimeToDisplay =`${MinsFromTimeStamp}m`
+                              }
+    
                             return(
                                 <div key={index} className="row d-flex justify-content-between mt-2" style={{ backgroundColor: '#131329',boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px', borderRadius: '5px', borderRight: '4px solid #9190AD' }}>
                                 <div className="col-4 d-flex justify-content-start"  >
@@ -596,7 +609,7 @@ useEffect(()=>{
                                     </div>
                                     <div className="col-8 flex-column ms-2 mt-1" >
                                         <span className="analysisBoardSpantrader mt-2 ">#{items.token_id}</span><br />
-                                        <span className="analysisBoardSpantrader mt-2 ">{timeToDisplayMins}m ago</span>
+                                        <span className="analysisBoardSpantrader mt-2 ">{finalTimeToDisplay} ago</span>
                                     </div>
                                 </div>
                                 <div className="col-6 d-flex justify-content-evenly ">

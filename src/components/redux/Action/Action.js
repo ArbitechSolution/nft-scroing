@@ -171,8 +171,8 @@ export const AssetsForSale_Api = (params,selectvalue)=>async(dispatch)=>{
             }
            
         })
-        let res = await axios.get(`${Base_Url}/ListedData?limit=50&slug=${params.collectionName}&period=${selectvalue}`)
-        // console.log("response fo the listing genesis",res.data.result)
+        let res = await axios.get(`${Base_Url}/ListedData?slug=${params.collectionName}&period=${selectvalue}`)
+        console.log("response fo the listing genesis",res.data.result)
      
         dispatch({
             type: ASSETS_FOR_SALE,

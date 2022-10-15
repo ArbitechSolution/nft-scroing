@@ -17,7 +17,7 @@ function AssetsForSale() {
     const params = useParams()
     const dispatch = useDispatch()
     let finalArray = []
-    let selectvalue = "15M"
+    let selectvalue = "7D"
     const getValue = (e) => {
         let slectElement = e.target
         selectvalue = slectElement.value;
@@ -55,10 +55,10 @@ function AssetsForSale() {
                     <span>Period</span>
                     <div className="selectFloorPrice ms-2">
                         <select className='selectFloorPriceDown' onChange={(e) => getValue(e)}>
-                            <option value="15M" selected>15min</option>
+                            <option value="15M" >15min</option>
                             <option value="1H" >1H</option>
                             <option value="1D">1D</option>
-                            <option value="7D" >7D</option>
+                            <option value="7D" selected >7D</option>
                             <option value="30D">30D</option>
                         </select>
                     </div>

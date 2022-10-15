@@ -24,7 +24,7 @@ function MyScatterPlot() {
     const dispatch = useDispatch()
     const { saleData, isLoading, filterdta, outlierDta } = useSelector((state) => state.Sale_RankingReducer);
     const [timeScale, setTimeScale] = useState('day')
-    const [isOutlierData, setisLierData] = useState(true)
+    const [isOutlierData, setisLierData] = useState(false)
 
     let selectvalue = "7D"
     if(isOutlierData){
@@ -113,9 +113,11 @@ function MyScatterPlot() {
     return (
         <div className='mt-4' style={{ backgroundColor: '#14142B', borderRadius: '10px' }}>
             <div className='d-flex pt-1 justify-content-between pt-3'>
+                <div className="text-white text-xl font-bold text-center ps-2 mb-2">Sales/Ranking</div>
+
                 <div className='d-flex ms-4'>
                     <span>Period</span>
-                    <div className="selectFloorPrice ms-2">
+                    <div className="selectFloorPrice ">
                         <select className='selectFloorPriceDown' onChange={(e) => getValue(e)}>
                             <option value="15M">15min</option>
                             <option value="1H" >1H</option>
