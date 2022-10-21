@@ -18,7 +18,6 @@ import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
 import { Sale_RankingApi } from '../redux/Action/Action';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-// import {Chart} from "chart"
 function SaleRanking() {
   let maxPrice;
   let minPrice;
@@ -28,8 +27,6 @@ function SaleRanking() {
   const colors = scaleOrdinal(schemeCategory10).range();
 
   const {saleData, isLoading,filterdta,outlierDta} = useSelector((state) => state.Sale_RankingReducer);
-  // console.log("saleData", saleData);
-  // console.log("outlierDta", outlierDta);
   let selectvalue ="15M"
   const getValue = (e) =>{
   let {value} = e.target
@@ -37,7 +34,6 @@ function SaleRanking() {
   dispatch(Sale_RankingApi(params, selectvalue))
   }
 
-  // new Chart
 function shuffle(array) {
   console.log("the array inside Shuffle",array)
   const prices = array.map((obj)=>{
@@ -110,20 +106,18 @@ useEffect(()=>{
             
           <XAxis dataKey="timestamp" name="date"
           type = "category"
-          // allowDuplicatedCategory={false}
-          // domain={['auto', 'auto']}
+
             domain={[saleData[0]?.timestamp, saleData[saleData.length]?.timestamp]}
-          // tickCount={10}
-          // minTickGap={60}
+
           tickFormatter={timeStr => moment(timeStr).format('HH:mm')} 
             />
           <YAxis dataKey="price" name="price" 
-          // domain={[minPrice, maxPrice]}
+
           />
           <Tooltip cursor={{ strokeDasharray: "1 1"}} />
          
           <Scatter   data={isOutlierData?shuffledData:saleData} fill="#8884d8" >
-          {/* <Scatter   data={saleData} fill="#8884d8" > */}
+
 
           {saleData.map((entry, index) => (
               <Cell r={0.002} key={`cell-${index}`} fill={colors[index % colors.length]} />

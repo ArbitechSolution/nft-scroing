@@ -26,40 +26,33 @@ function AssetsForSale() {
 
     // let finalArray=[]
     const { data, isLoading } = useSelector((state) => state.Fetch_AssetsForSale_Reducer)
-    // console.log("Data for the asssets listing in assetForSale", data[0])
-
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "June",
+    "July", "Aug", "Sep", "Oct", "Nov", "Dec"
+  ];
     data?.map((items) => { 
-        // let splittedData = items.timestamp.split(" ")
-        let toBeConverted = items.timestamp
-            let dateHere = new Date(toBeConverted).toLocaleTimeString('en-US',{
-            hour: '2-digit',
-            minute: '2-digit',
-        })
-        // console.log("dateHere hehehhehe", dateHere)
-        // console.log("items.timestamp",toBeConverted);
-        finalArray = [...finalArray,{ "price": items.price, "date": dateHere}]
+        let toBeConverted = items.timestamp;
+            toBeConverted = toBeConverted.split(" ")
+            toBeConverted = toBeConverted[0].split("-")
+            let month = monthNames[parseInt(toBeConverted[1])-1];
+            let day = toBeConverted[0]
+        finalArray = [...finalArray,{ "Listing": items.listed_count, "date": `${month}:${day}`}]
       })
-    // data?.map((items) => {
-    //     let splittedData = items.event_date.split("T")
-    //     let finalSplit = splittedData[1].split("Z")
-    //     finalArray = [...finalArray, { "price": items.event_price, "date": finalSplit[0] }]
-    // })
     useEffect(() => {
         dispatch(AssetsForSale_Api(params, selectvalue))
     }, [])
     return (
         <div className='' style={{ backgroundColor: '#14142B', borderRadius: '10px', paddingLeft: '10px' }}>
-            <div className='d-flex pt-1'>
+            <div className='d-flex justify-content-between pt-1'>
                 <div className="text-white text-xl font-bold text-center mb-2">Active Listings</div>
-                <div className='d-flex ms-4'>
-                    <span>Period</span>
+                <div className=''>
                     <div className="selectFloorPrice ms-2">
-                        <select className='selectFloorPriceDown' onChange={(e) => getValue(e)}>
-                            <option value="15M" >15min</option>
-                            <option value="1H" >1H</option>
-                            <option value="1D">1D</option>
+                    <span className="text-white text-xl font-bold">Period</span>&nbsp;
+                        <select className='selectFloorPriceDown text-white text-xl font-bold' onChange={(e) => getValue(e)}>
+                            <option value="3D" >3D</option>
                             <option value="7D" selected >7D</option>
-                            <option value="30D">30D</option>
+                            <option value="14D">14D</option>
+                            <option value="30D" >30D</option>
+                            <option value="60D">60D</option>
                         </select>
                     </div>
                 </div>
@@ -67,7 +60,7 @@ function AssetsForSale() {
             {
                 isLoading ? <ResponsiveContainer width="100%" className="floorpriceheight">
                     <AreaChart data={finalArray}
-                        margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                        margin={{ top: 10, right: 30, left: 0, bottom: 15 }}>
                         <defs>
                             <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
                                 <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
@@ -75,10 +68,10 @@ function AssetsForSale() {
                             </linearGradient>
                         </defs>
                         <XAxis dataKey="date" />
-                        <YAxis dataKey="price" />
+                        <YAxis dataKey="Listing" />
                         <Tooltip />
                         <Area type="monotone" dataKey="date" stroke="#1d1d808c" fillOpacity={1} fill="#14146c6b" />
-                        <Area type="monotone" dataKey="price" stroke="#1d1d808c" fillOpacity={1} fill="#27247d" />
+                        <Area type="monotone" dataKey="Listing" stroke="#1d1d808c" fillOpacity={1} fill="#27247d" />
 
                     </AreaChart>
                 </ResponsiveContainer> : <SkeletonTheme baseColor="#202020" highlightColor="#444">
@@ -87,10 +80,6 @@ function AssetsForSale() {
                     </p>
                 </SkeletonTheme>
             }
-
-
-
-
         </div>
     )
 }

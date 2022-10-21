@@ -1,12 +1,10 @@
 import {SALE_RANKING, FETCH_cOLLECTON,GET_CURRENT_LIST, ANALYSIS_BOARD, ASSETS_FOR_SALE, FLOOR_PRICE} from "../Type"
 import axios from "axios"
-import moment from "moment";
 let timeScaleForAutoCall ;
 let collectionNameForAutoCall; 
 const API_KEY = process.env.REACT_APP_API_KEY;
 const Base_Url=process.env.REACT_APP_BASE_URL;
-// console.log("Base Url is ", API_KEY)
-// console.log("Base Url is ", Base_Url)
+
 
 
 export const Sale_RankingApi = (params, selectvalue) => async(dispatch)=>{
@@ -25,14 +23,11 @@ export const Sale_RankingApi = (params, selectvalue) => async(dispatch)=>{
                 outlierDta :[]
             }
            });
-        //    oldurl =https://nft-scoring.herokuapp.com/v2/saleListing?timestamp=${selectvalue}&collection_slug=${params.collectionName}
-        // console.log('This will run every second Action!',params.collectionName);
           
         let {data} =await axios.get(`${Base_Url}/SaleListing?period=${selectvalue}&slug=${params.collectionName}`)
-        // console.log('This will run every second Action!',params.collectionName);
-           let {result} = data
-        //    console.log("result", result);
 
+           let {result} = data
+           console.log("result", result);
 dispatch({
     type: SALE_RANKING,
     payload: {
@@ -42,38 +37,21 @@ dispatch({
         outlierDta :[]
     }
    });
-//    result?.map((items) => {
-//     // let finalTime =new Date(items.event_date);
-//     // finalTime = finalTime.getTime()
 
-//     // console.log("items.finalTime",finalTime);
-//     // let splittedData = items.event_date.split("T")
-//     // let finalSplit = splittedData[1].split("Z")
-//     // let seconsSplit = finalSplit[0].split(":")
-//     // let finalTime = `${seconsSplit[0]}:${seconsSplit[1]}`
-//     // console.log("finalTime", finalTime)
-//     console.log("momentinf sadfddsf",moment(items.timestamp).format('HH:mm'))
-
-//     // finalArray = [...finalArray, { "price": items?.event_price, "date": finalTime }]
-//   })
 
   let values = result?.sort( function(a, b) {
     return a.price - b.price;
   });
-//   console.log("values", values);
   var q1 = values[Math.floor((values.length / 4))];
   var q3 = values[Math.ceil((values.length * (3 / 4)))];
   var iqr = q3?.price - q1?.price;
   var maxValue = q3?.price + iqr*1.5;
-//   console.log("max", maxValue);
   var minValue = q1?.price - iqr*1.5;
-//   console.log("min", minValue);
   let filteredData = values.filter(function(x) {
     if(x.price <= maxValue && x.price >= minValue){
       return x;
     }
   });
-//   console.log("filteredData", filteredData);
    dispatch({
     type: SALE_RANKING,
     payload: {
@@ -89,54 +67,7 @@ dispatch({
     }
 
 }
-// export const Sale_RankingApi_AutoCall = ( params, selectvalue) => async(dispatch)=>{
-    
-   
 
-//     try{
-
-//         let finalArray = []
-//         timeScaleForAutoCall =selectvalue;
-//         collectionNameForAutoCall = params.collectionName
-      
-           
-//             //   console.log('This will run every second Action!',params.collectionName);
-                
-//               let {data} =await axios.get(`https://orcanftapi.net:5000/api/collection/SaleListing?period=${selectvalue}&slug=${params.collectionName}`)
-//             //   console.log('This will run every second Action!',params.collectionName);
-      
-//                  let {result} = data
-//                  console.log("result", result);
-             
-      
-//         let values = result?.sort( function(a, b) {
-//           return a.price - b.price;
-//         });
-//         var q1 = values[Math.floor((values.length / 4))];
-//         var q3 = values[Math.ceil((values.length * (3 / 4)))];
-//         var iqr = q3?.price - q1?.price;
-//         var maxValue = q3?.price + iqr*1.5;
-//         var minValue = q1?.price - iqr*1.5;
-//         let filteredData = values.filter(function(x) {
-//           if(x.price <= maxValue && x.price >= minValue){
-//             return x;
-//           }
-//         });
-//          dispatch({
-//           type: SALE_RANKING,
-//           payload: {
-//               data:result,
-//               isLoading:false,
-//               filterdta:finalArray,
-//               outlierDta :filteredData
-      
-//           }
-//          })
-//           }catch(error){
-//               console.log("error while getting saleRanking api ", error);
-//           }
-
-// }
 export const Fetch_Collection_Api = (period)=>async(dispatch)=>{
     try{
         dispatch({
@@ -147,7 +78,6 @@ export const Fetch_Collection_Api = (period)=>async(dispatch)=>{
             }
            })
 let res = await axios.get(`${Base_Url}/Trending?period=${period}`)
-// console.log("Res in action Fetch_Collection_Api",res.data.result)
        dispatch({
         type: FETCH_cOLLECTON,
         payload: {
@@ -160,7 +90,6 @@ let res = await axios.get(`${Base_Url}/Trending?period=${period}`)
     }
 }
 export const AssetsForSale_Api = (params,selectvalue)=>async(dispatch)=>{
-    // console.log("Selected Value for active listing graph", selectvalue)
     try{
         
         dispatch({
@@ -171,8 +100,26 @@ export const AssetsForSale_Api = (params,selectvalue)=>async(dispatch)=>{
             }
            
         })
-        let res = await axios.get(`${Base_Url}/ListedData?slug=${params.collectionName}&period=${selectvalue}`)
-        console.log("response fo the listing genesis",res.data.result)
+        let valTobepassed ;
+        let  currentdate = (new Date()).getTime();
+        currentdate = parseInt(currentdate/1000)
+        if(selectvalue =="3D"){
+            valTobepassed = parseFloat(currentdate)-259200
+        }else if(selectvalue =="7D"){
+            valTobepassed = parseFloat(currentdate)-604800
+        }else if(selectvalue =="14D"){
+
+            valTobepassed = parseFloat(currentdate)-1209600
+
+        }else if (selectvalue=="30D"){
+
+            valTobepassed = parseFloat(currentdate)-2592000
+
+        }else{
+            valTobepassed = parseFloat(currentdate)-5184000
+
+        }
+        let res = await axios.get(`${Base_Url}/ListedCount?timestamp=${valTobepassed}&collectionName=${params.collectionName}`)
      
         dispatch({
             type: ASSETS_FOR_SALE,
@@ -187,17 +134,7 @@ export const AssetsForSale_Api = (params,selectvalue)=>async(dispatch)=>{
     }
    
 }
-export const FetchAnalysis_Board_Api = (params)=>async(dispatch)=>{
-    try{
-let res = await axios.get(`https://nameless-garden-35810.herokuapp.com/collections/${params.collectionName}`)
-  dispatch({
-    type: ANALYSIS_BOARD,
-    payload: res.data.data.collection
-  })
-    }catch(error){
-        console.log();
-    }
-}
+
 
 
 export const Floor_Price_Api = (params,selectvalue)=>async(dispatch)=>{
@@ -235,7 +172,6 @@ export const Floor_Price_Api = (params,selectvalue)=>async(dispatch)=>{
         }
         
         let res = await axios.get(`${Base_Url}/FloorPrice?timestamp=${valTobepassed}&collectionName=${params.collectionName}`)
-        
         dispatch({
             type: FLOOR_PRICE,
             payload: {
@@ -256,6 +192,7 @@ export const fetch_retrive_collection = (params) => async (dispatch)=>{
             type:"fetch_retrive_collection",
             payload:{
                 data:{},
+                payoutAddress:"",
                 statsData:{},
                 isLoading:true,
                 stats:[],
@@ -271,7 +208,10 @@ export const fetch_retrive_collection = (params) => async (dispatch)=>{
           let avgVol=[]
           let avgSales=[]
         let filData = res.data.collection.stats
-
+        dispatch({
+            type: ANALYSIS_BOARD,
+            payload: res.data.collection
+          })
         let oneHourAvgPrice = filData.one_day_average_price
         avgPricesArray.push(oneHourAvgPrice)
 
@@ -322,6 +262,7 @@ export const fetch_retrive_collection = (params) => async (dispatch)=>{
             type:"fetch_retrive_collection",
             payload:{
                 data:res.data.collection,
+                payoutAddress:res.data.collection?.primary_asset_contracts[0]?.address,
                 statsData:res.data.collection.stats,
                 isLoading:false,
                 stats:avgPricesArray,

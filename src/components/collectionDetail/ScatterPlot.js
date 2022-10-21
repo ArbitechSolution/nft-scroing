@@ -20,18 +20,12 @@ import 'chartjs-adapter-moment'
 ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend, TimeScale);
 
 function MyScatterPlot() {
-    const [loadingSetTimeOut, setLoadingsetTimeout] = useState(true)
     const dispatch = useDispatch()
     const { saleData, isLoading, filterdta, outlierDta } = useSelector((state) => state.Sale_RankingReducer);
     const [timeScale, setTimeScale] = useState('day')
-    const [isOutlierData, setisLierData] = useState(false)
+    const [isOutlierData, setisLierData] = useState(true)
 
     let selectvalue = "7D"
-    if(isOutlierData){
-        // console.log("true whowing",outlierDta);
-    }else{
-        // console.log("fasle whowing",saleData);
-    }
   
     const getValue = (e) => {
         let { value } = e.target
@@ -49,7 +43,7 @@ function MyScatterPlot() {
             setTimeScale("day")
 
         }else if(selectvalue =="30D"){
-            setTimeScale("day")
+            setTimeScale("week")
         }
         dispatch(Sale_RankingApi(params, selectvalue))
     }
@@ -104,21 +98,17 @@ function MyScatterPlot() {
     const params = useParams()
     useEffect(() => {
         dispatch(Sale_RankingApi(params, selectvalue))
-    //      setInterval(()=>{
-    //     console.log("calling after 30 seconds ")
-    //     dispatch(Sale_RankingApi(params, selectvalue))
-    // },60000)
     }, [])
 
     return (
         <div className='mt-4' style={{ backgroundColor: '#14142B', borderRadius: '10px' }}>
-            <div className='d-flex pt-1 justify-content-between pt-3'>
+            <div className='d-flex justify-content-between pt-3'>
                 <div className="text-white text-xl font-bold text-center ps-2 mb-2">Sales/Ranking</div>
 
-                <div className='d-flex ms-4'>
-                    <span>Period</span>
-                    <div className="selectFloorPrice ">
-                        <select className='selectFloorPriceDown' onChange={(e) => getValue(e)}>
+                <div className='d-flex justify-content-around'>
+                    <div className="selectFloorPrice me-2">
+                    <span className="text-white text-xl font-bold">Period</span>&nbsp;
+                        <select className='selectFloorPriceDown text-white text-xl font-bold' onChange={(e) => getValue(e)}>
                             <option value="15M">15min</option>
                             <option value="1H" >1H</option>
                             <option value="1D">1D</option>
@@ -126,14 +116,13 @@ function MyScatterPlot() {
                             <option value="30D">30D</option>
                         </select>
                     </div>
-                </div>
-                <div className=' col-md-2 d-flex  justify-content-evenly'>
-                    <label className="form-check-label" for="flexSwitchCheckDefault">Outliers</label>&nbsp;
-                    <div className="form-check form-switch" >
-                        <input className="form-check-input " type="checkbox" id="flexSwitchCheckDefault"
+                    <label className="form-check-label text-white text-xl font-bold" for="flexSwitchCheckDefault">Outliers</label>
+                    <div className="form-check form-switch ms-1" >
+                        <input className="form-check-input " type="checkbox" checked={isOutlierData} id="flexSwitchCheckDefault"
                         onChange={()=>setisLierData(!isOutlierData)}
                         />
                     </div>
+
                 </div>
             </div>
             {

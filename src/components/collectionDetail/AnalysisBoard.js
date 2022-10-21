@@ -1,12 +1,10 @@
-// import React from 'react'
-import react, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import OutWebsite from "../../assets/OutWebsite.svg"
 import "./Collection.css"
 import ether from "../../assets/ether.svg"
 import website from "../../assets/website.svg"
 import discord from "../../assets/discord.svg"
 import opensea from "../../assets/opensea.svg"
-import twitter from "../../assets/twitter.svg"
 import loading from "../../assets/loading.svg"
 import { BsLightningChargeFill } from "react-icons/bs"
 import { OpenSeaSDK, Network } from 'opensea-js';
@@ -20,33 +18,29 @@ import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
 import AssetsForSale from "./AssetsForSale";
 import FloorPrice from "./FloorPrice";
 import copy from "copy-to-clipboard"; 
-// import SaleRanking from "./SaleRanking";
 import axios from "axios"
 import MyScatterPlot from "./ScatterPlot"
-import {AiFillCaretUp, AiFillPlusCircle} from "react-icons/ai"
 import { useParams  } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
-import {FetchAnalysis_Board_Api, fetch_retrive_collection, fetch_collection_stats,fetchCurrentListing} from "../redux/Action/Action";
+import { fetch_retrive_collection} from "../redux/Action/Action";
 import { loadWeb3 } from "../api/api";
 import { toast } from 'react-toastify';
 const API_KEY = process.env.REACT_APP_API_KEY || "";
 const Base_Url=process.env.REACT_APP_BASE_URL;
 
 function    AnalysisBoard() {
-    // console.log("Base Url is ", Base_Url)
-    const [load,setLoad] = useState(true)
+
     const [listingData, setListingData]= useState(null)
     const params = useParams()
     const [isload,setisLoad]= useState(false)
-    // const [isLoadTrades, setIsloadTrades]= useState(false)
     const [isCopy, setIsCopy] = useState("");
     const [listingDataLength, setListingDataLength]= useState(0)
     const [tradesDataArray, setTradesDataArray] = useState([])
     const dispatch = useDispatch();
     const Fetch_AnalysisBoard_REducer_Data = useSelector((state)=>state.Fetch_AnalysisBoard_REducer.data)
-    let {retriveCollections, retriveIsLoading, retriveCollectionStats,retreiceCollectionVol,retrieceCollectionSale  } = useSelector(state => state.Fetch_Retrive_Collection_Reducer);
-  let finalArray = []
-      const copyToClipboard = () => {
+    let {retriveCollections, retriveIsLoading, retriveCollectionStats,retreiceCollectionVol,retrieceCollectionSale, payoutAddress  } = useSelector(state => state.Fetch_Retrive_Collection_Reducer);
+
+    const copyToClipboard = () => {
         copy(retriveCollections?.payout_address);
         toast.success("Address copied!");
         setIsCopy("copy")
@@ -87,8 +81,7 @@ function    AnalysisBoard() {
         }
     ];
     const buyNft = async(value,i)=>
-    {
-        
+    {    
         try{
             
             let acc= await loadWeb3();
@@ -100,10 +93,10 @@ function    AnalysisBoard() {
             else if(acc=="Wrong Network"){ 
                 toast.error("Wrong Network")
             }else{
-                let nftPrice = listingData[i].event_price;
+                let nftPrice = listingData[i].price;
                 let usersBalance =await web3.eth.getBalance(acc);
                 usersBalance = web3.utils.fromWei(usersBalance);
-                if(parseFloat(usersBalance)>parseFloat(nftPrice)){
+                if(parseFloat(usersBalance)>=parseFloat(nftPrice)){
                     const provider = window.ethereum;
                     const openseaSDK = new OpenSeaSDK(provider, {
                         networkName: Network.Main,
@@ -111,7 +104,7 @@ function    AnalysisBoard() {
                       })
         
                       const {orders} = await openseaSDK.api.getOrders({
-                        assetContractAddress:retriveCollections?.payout_address,
+                        assetContractAddress:payoutAddress,
                         tokenId:value,
                         side: "ask",
                         orderBy: "eth_price",
@@ -127,7 +120,6 @@ function    AnalysisBoard() {
                          recipientAddress:acc // The address of the recipient, i.e. the wallet you're purchasing on behalf of
                        })
                        toast.success("Transaction Successfull")
-                    //    res.send({success:true,result:"NFT have been purchased successfully!"})
                     }
                 }else{
                     toast.info("Insufficient Balance Please Recharge")
@@ -141,7 +133,7 @@ function    AnalysisBoard() {
         }
         
     }
-
+    
 const fetchApis= async()=>{
     try{
 
@@ -149,31 +141,19 @@ const fetchApis= async()=>{
             axios.get(`${Base_Url}/ListedData?limit=50&slug=${params.collectionName}`),
            axios.get(`${Base_Url}/SaleListing?limit=50&slug=${params.collectionName}`)
         ])
-
- 
         const data = await Promise.all(res.map(r => r))
         let apiListingData = data[0].data.result;
         let tradingData = data[1].data.result;
-        // console.log("resForTrades apiListingData",apiListingData)
-        // console.log("resForTrades tradingData",tradingData)
-
-        setTradesDataArray(tradingData)
-
-        setListingData(apiListingData)
+        const sorttradingData = tradingData?.sort((a, b)=>{
+            return    a.timestamp - b.timestamp
+            })
+        setTradesDataArray(sorttradingData.reverse())
+        const listData = apiListingData?.sort((a, b)=>{
+        return    a.timestamp - b.timestamp
+        })
+        setListingData(listData.reverse())
         setListingDataLength(apiListingData.length)
-        // data[0]?.data?.map((items) => {
-        //     let splittedData = items.event_date.split("T")
-        //     let finalSplit = splittedData[1].split("Z")
-        //     finalArray = [...finalArray,finalSplit[0] ] 
-        //   })
-        // setTradesDataArray(data[1]?.data?.items)
-//  const resForTrades = await axios.get(`https://orcanftapi.net:5000/api/collection/SaleListing?limit=50&slug=${params.collectionName}`)
-        // let tradingData= resForTrades.data.result
-//  setIsloadTrades(true)
-setisLoad(true)
-
-
-
+        setisLoad(true)
     }catch(e){
       console.log("Error while fetching  trades api",e);
     }
@@ -188,12 +168,15 @@ const fetchTradesApi =async()=>{
         const data = await Promise.all(res.map(r => r))
         let apiListingData = data[0].data.result;
         let tradingData = data[1].data.result;
-        // console.log("resForTrades apiListingData",apiListingData)
-        // console.log("resForTrades tradingData",tradingData)
 
-        setTradesDataArray(tradingData)
-
-        setListingData(apiListingData)
+        const sorttradingData = tradingData?.sort((a, b)=>{
+            return    a.timestamp - b.timestamp
+            })
+        setTradesDataArray(sorttradingData.reverse())
+        const listData = apiListingData?.sort((a, b)=>{
+            return    a.timestamp - b.timestamp
+            })
+            setListingData(listData.reverse())
         setListingDataLength(apiListingData.length)
 
     }catch(e){
@@ -205,7 +188,6 @@ const fetchTradesApi =async()=>{
 
 useEffect(() => {
     const interval = setInterval(() => {
-
     fetchTradesApi()
     }, 30000);
     return () => clearInterval(interval);
@@ -213,11 +195,7 @@ useEffect(() => {
 
 
 
-
-
 useEffect(()=>{
-    setLoad(true)
-    dispatch(FetchAnalysis_Board_Api(params))
     dispatch(fetch_retrive_collection(params));
     fetchApis()
 },[])
@@ -235,20 +213,13 @@ useEffect(()=>{
               <div className="col-lg-7 d-flex  justify-content-center" >
                   <div className='row d-flex justify-content-center' >
                       <div className='col-lg-3 col-11 justify-content-center ' >
-                          <img src={retriveCollections?.banner_image_url} alt="banner" className="AnalysisBoardImage img-fluid" />
-                          <div className="row" >
-                          {/* <div className=" col-12 d-flex justify-content-md-between mt-4" >
-                              <button className=" btnicon me-sm-0 me-3"><AiFillCaretUp size={15}/>&nbsp;1.5k</button>
-                              <button className=" btnicon"><AiFillPlusCircle size={15}/>&nbsp;Watch</button>
-                          </div> */}
-                          <span className="text-center mt-2 aTagStyle">Refresh metadata</span>
-                          </div>
+                          <img src={retriveCollections?.banner_image_url} alt="banner" className="AnalysisBoardImage img-fluid rounded" />
                       </div>
                       <div className=' col-lg-9 ps-3' >
                           <div className="text-4xl font-bold" >{retriveCollections?.name}</div>
                           <div className="flex items-center space-x-2 py-2 d-flex flex-row align-items-center" >
                               <div className="text-sm payOutAddress"> 
-                                {retriveCollections?.payout_address}</div>
+                                {payoutAddress}</div>
                               <AiFillCopy className={isCopy == "copy" ? "ms-2 mt-1 text-primary courser" : "ms-2 mt-1 icon-color courser"}size={17} onClick={()=>copyToClipboard()} />
                               <a href="https://etherscan.io/"
                                target="_blank">
@@ -256,14 +227,16 @@ useEffect(()=>{
                               </a>
                           </div>
                           <div className="d-flex space-x-8   flex-md-row flex-column" >
-                              <div className="bg-blue-8607  px-1 pe-2 ps-2 py-1 mt-2 textSize m-1" >Created Date : {retriveCollections?.created_date}
-                              </div>
-                              <div className="bg-blue-8607 rounded-full px-1 py-1 mt-2 textSize m-1" >Total Supply : 
-                              {totalsupply}
-                              </div>
+                            <span className="bg-secondary rounded p-1">Created Date : {retriveCollections?.created_date}</span>
+                            &nbsp;
+                            &nbsp;
+                            <span className="bg-secondary rounded p-1">Total Supply : {totalsupply}</span>
+
+                          </div>
+                          <div>
+                          <p className="mt-3 text-szzz " >{retriveCollections?.description}</p>
                           </div>
 
-                          <p className="mt-3 text-szzz img-fluid " >{retriveCollections?.description}</p>
                       </div>
                   </div>
               </div>
@@ -300,12 +273,6 @@ useEffect(()=>{
                   <div className="row d-flex justify-content-center" >
                       <div className="col-md-8 ">
                           <div className="row">
-                              {/* <div className="col-5 align-items-center text-center" >
-                                  <div className="analysisBoardSpantraderfoollrrrr">Revealed <span className="Revealed" >&nbsp;100%</span></div>
-                              </div>
-                              <div className="col-7 align-items-center text-center" >
-                                  <div className="analysisBoardSpantraderfoollrrrr " >Ranks Variance <span className="Revealed" >&nbsp;99%</span></div>
-                              </div> */}
                           </div>
                       </div>
 
@@ -471,27 +438,27 @@ useEffect(()=>{
 
       </div>
 
-      {/* <div className=" d-flex  justify-content-center " > */}
+
           <div className="row text-white d-flex  justify-content-center justify-content-around pt-3 pb-3 w-100 ">
               <div className="col-lg-2 col-11 box-width " >
                   <div className="row d-flex  justify-content-between">
                       <div className="col-2 d-flex align-items-center " >
-                          <h6>Listings</h6>&nbsp;&nbsp;
-                          <span className="typo-body text-vojta-second  ary font-normal">{listingDataLength}</span>
+                          <span className="text-white text-xl font-bold">Listings</span>&nbsp;&nbsp;
+                          <span className="typo-body text-vojta-second  ary">({listingDataLength})</span>
                       </div>
                       <div className="col-8 d-flex  justify-content-end">
                           <div className="selectFloorPriceAnalysisBoard ms-2">
                               <select className='selectFloorPriceDownAnalysisBoard'>
                                   <option value="1">Recently Listed</option>
                                   <option value="2">Buy Price</option>
-                                  <option value="3">Buy rank</option>
-                                  <option value="3">Rarity</option>
+                                  <option value="3" disabled>Buy rank</option>
+                                  <option value="3" disabled>Rarity</option>
                               </select>
                           </div>
                          
                       </div>
                   </div>
-                  <div  className="scrollView ">
+                  <div  className="scrollView">
                     { isload?
                         listingData?.map((items,index)=>{
                             let finalTimeToDisplay="";
@@ -508,10 +475,14 @@ useEffect(()=>{
                                 finalTimeToDisplay =`${hoursFromTimeStamp}h`
                               }
                           }else{
-                            finalTimeToDisplay =`${MinsFromTimeStamp}m`
+                            if(parseFloat(MinsFromTimeStamp)<1){
+                                finalTimeToDisplay = `0m`
+                            }else{
+                                
+                                finalTimeToDisplay =`${MinsFromTimeStamp}m`
+                            }
                           }
 
-                        //   let timeToDisplayMins = new Date(timePassed).getMinutes()
                             return(
                                 
                                 <div key={index} className="row d-flex justify-content-start mt-2" style={{ backgroundColor: '#1B1B36', boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px', borderRadius: '5px' }}>
@@ -555,11 +526,11 @@ useEffect(()=>{
                   </div>
               </div>    
               <div className="col-lg-7  ">
-                  <div className="row justify-content-between" >
-                      <div className="col-lg-5 col-11 mt-3 box-width-mini-chart ">
+                  <div className="row justify-content-between " >
+                      <div className="col-lg-5 col-11  box-width-mini-chart ">
                           <AssetsForSale />
                       </div>
-                      <div className="col-lg-5 col-11 mt-3 box-width-mini-chart ">
+                      <div className="col-lg-5 col-11  box-width-mini-chart ">
                           <FloorPrice />
                       </div>
                   </div>
@@ -573,21 +544,18 @@ useEffect(()=>{
               <div className="col-lg-2 col-11 box-width " >
                   <div className="row d-flex  justify-content-between">
                       <div className="col-8 d-flex align-items-center " >
-                          <h5>Trades</h5>&nbsp;&nbsp;
-                          <span className="typo-body text-vojta-secondary font-normal">(0 new pending)</span>
+                          <span className="text-white text-xl font-bold">Trades</span>
                       </div>
                   </div>
-                  <div className="scrollView">
+                  <div className="scrollView mt-3">
                     {
                      isload?
                         tradesDataArray?.map((items,index)=>{
                             let finalTimeToDisplay="";
-                            //   console.log("items into the map",items)
                               let currentTime = new Date().getTime();
                               let timePassed = parseInt(currentTime)-parseInt(items.timestamp)
                               let secondsFromTimeStamp=Math.floor(timePassed/1000)
                               let MinsFromTimeStamp=Math.floor(secondsFromTimeStamp/60)
-                              console.log("Time After divided by 60", MinsFromTimeStamp);
                               if(parseInt(MinsFromTimeStamp)>60){
                                   let hoursFromTimeStamp = Math.floor(MinsFromTimeStamp/60)
                                   if (hoursFromTimeStamp>24){
@@ -597,7 +565,12 @@ useEffect(()=>{
                                     finalTimeToDisplay =`${hoursFromTimeStamp}h`
                                   }
                               }else{
-                                finalTimeToDisplay =`${MinsFromTimeStamp}m`
+                                if(parseFloat(MinsFromTimeStamp)<1){
+                                    finalTimeToDisplay = `0m`
+                                }else{
+                                    
+                                    finalTimeToDisplay =`${MinsFromTimeStamp}m`
+                                }
                               }
     
                             return(
@@ -640,7 +613,6 @@ useEffect(()=>{
               </div>
 
           </div>
-      {/* </div> */}
   </div>
     }
       </> 
