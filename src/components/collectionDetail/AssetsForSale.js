@@ -36,7 +36,7 @@ function AssetsForSale() {
             toBeConverted = toBeConverted[0].split("-")
             let month = monthNames[parseInt(toBeConverted[1])-1];
             let day = toBeConverted[0]
-        finalArray = [...finalArray,{ "Listing": items.listed_count, "date": `${month}:${day}`}]
+        finalArray = [...finalArray,{ "Listing": items.listed_count, "date": `${month} ${day}`}]
       })
     useEffect(() => {
         dispatch(AssetsForSale_Api(params, selectvalue))

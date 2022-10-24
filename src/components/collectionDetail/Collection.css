@@ -257,7 +257,11 @@ tr:nth-child(even) {
     font-family: Rubik,sans-serif;
   }
   .scrollView{
-max-height: 98vh;
+height: 102vh;
+overflow-y: auto;
+  }
+  .scrollViewss{
+    height: 105vh;
 overflow-y: auto;
   }
   .courser{
@@ -265,12 +269,15 @@ overflow-y: auto;
   }
 .box-width{
   width: 250px !important;
-  height: 100%;
-  border: 2px solid red
+  /* height: 100%; */
+  /* border: 2px solid red */
 }
 
 .box-width-mini-chart{
-  width: 355px !important;
+  width: 400px !important;
+  /* border: 2px solid red !important */
+
+  /* height: 100vh; */
   /* height: 500px !important;
   border: 2px solid red !important */
 } 
@@ -286,6 +293,25 @@ overflow-y: auto;
   }
   
   .scrollView::-webkit-scrollbar-thumb {
+    border-radius: 100px;
+    border: 6px solid rgba(0, 0, 0, 0.18);
+    border-left: 0;
+    border-right: 0;
+    background-color: rgb(213, 213, 215);
+    font-family: Rubik,sans-serif;
+  }
+  .scrollViewss::-webkit-scrollbar {
+    width: 7px;
+    font-family: Rubik,sans-serif;
+  }
+  
+  .scrollViewss::-webkit-scrollbar-track {
+    background-color: transparent;
+    border-radius: 100px;
+    font-family: Rubik,sans-serif;
+  }
+  
+  .scrollViewss::-webkit-scrollbar-thumb {
     border-radius: 100px;
     border: 6px solid rgba(0, 0, 0, 0.18);
     border-left: 0;
@@ -373,6 +399,7 @@ overflow-y: auto;
 }
 .floorpriceheight{
   height: 280px !important;
+  /* border: 2px solid red !important */
 }
 .icon-color{
   --tw-text-opacity: 1;
@@ -391,7 +418,8 @@ overflow-y: auto;
   font-size: 13px;
 }
 .box-width-chart{
-  width: 100% !important
+  width: 100% !important;
+  height: 100%;
 }
 
 
@@ -413,49 +441,112 @@ overflow-y: auto;
 }
 @media(min-width: 2100px) and (max-width: 2160px){
   .scrollView{
-    height: 29% !important;
+    height: 26.5% !important;
     overflow-y: auto;
-    border: 2px solid red;
+    /* border: 2px solid red; */
       }
+      .scrollViewss{
+        height: 27% !important;
+    overflow-y: auto;
+      }
+      .box-width-mini-chart{
+        width: 49% !important;
+        /* border: 2px solid red !important */
+      } 
 }
 @media(min-width: 1910px) and (max-width: 1920px){
   .scrollView{
-    height: fit-content;
+    height: 25%;
         overflow-y: auto;
-    border: 2px solid red;
+    /* border: 2px solid red; */
       }
+      .scrollViewss{
+        height: 26% !important;
+    overflow-y: auto;
+      }
+      .box-width-mini-chart{
+        width: 49% !important;
+        /* border: 2px solid red !important */
+      } 
 }
-@media (min-width: 1960px) and (max-width: 7000px){
+@media(min-width: 6000px) and (max-width: 16000px){
   .box-width-mini-chart{
     width: 49% !important;
-    height: 400px;
+    height: 40vh;
     font-family: Rubik,sans-serif;
     /* border: 2px solid red !important */
   }
   .floorpriceheight{
-    height: 370px !important;
+    height: 38vh !important;
+    /* border: 2px solid red !important */
   }
   .box-width{
-    width: 340px !important;
+    width: 1030px !important;
+    /* height: 40vh; */
     /* border: 2px solid red */
   }
   .box-width-chart{
     width: 98%;
+    height: 40vh;
     /* border: 2px solid red */
   } 
   .scrollView{
-    max-height: 28%;
+    height: 100vh;
     overflow-y: auto;
     /* border: 2px solid red; */
+      }
+      .scrollViewss{
+        height: 102vh !important;
+    overflow-y: auto;
       }
       .bg-blue-86999{
         width: 440px;
         font-family: Rubik,sans-serif;
     }
     .grapheight{
-      height: 70% !important;
+      /* height: 70% !important; */
     /* border: 2px solid red; */
-
+    height: 38vh !important
+    }
+}
+@media (min-width: 2260px) and (max-width: 5999px){
+  .box-width-mini-chart{
+    width: 49% !important;
+    height: 40vh;
+    font-family: Rubik,sans-serif;
+    /* border: 2px solid red !important */
+  }
+  .floorpriceheight{
+    height: 38vh !important;
+    /* border: 2px solid red !important */
+  }
+  .box-width{
+    width: 430px !important;
+    /* height: 40vh; */
+    /* border: 2px solid red */
+  }
+  .box-width-chart{
+    width: 98%;
+    height: 40vh;
+    /* border: 2px solid red */
+  } 
+  .scrollView{
+    height: 100vh;
+    overflow-y: auto;
+    /* border: 2px solid red; */
+      }
+      .scrollViewss{
+        height: 102vh !important;
+    overflow-y: auto;
+      }
+      .bg-blue-86999{
+        width: 440px;
+        font-family: Rubik,sans-serif;
+    }
+    .grapheight{
+      /* height: 70% !important; */
+    /* border: 2px solid red; */
+    height: 38vh !important
     }
 }
 @media(max-width: 1390px){

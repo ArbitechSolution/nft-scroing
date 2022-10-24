@@ -32,7 +32,8 @@ const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "June","July", "Aug", "Se
             toBeConverted = toBeConverted[0].split("-")
             let month = monthNames[parseInt(toBeConverted[1])-1];
             let day = toBeConverted[0]
-            finalArrayOne = [...finalArrayOne, { "price": items.floor_price, "date": `${month}:${day}`}]
+            finalArrayOne = [...finalArrayOne, { "price": items.floor_price, "date": `${month} 
+            ${day}`}]
         }else{
             let intoHours = splittedData[1];
             intoHours = intoHours.split(":")
