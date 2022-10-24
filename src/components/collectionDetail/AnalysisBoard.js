@@ -547,7 +547,7 @@ useEffect(()=>{
                           <span className="text-white text-xl font-bold">Trades</span>
                       </div>
                   </div>
-                  <div className="scrollView mt-3">
+                  <div className="scrollView ">
                     {
                      isload?
                         tradesDataArray?.map((items,index)=>{

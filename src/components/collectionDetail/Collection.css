@@ -257,7 +257,7 @@ tr:nth-child(even) {
     font-family: Rubik,sans-serif;
   }
   .scrollView{
-height: 770px;
+max-height: 98vh;
 overflow-y: auto;
   }
   .courser{
@@ -265,6 +265,8 @@ overflow-y: auto;
   }
 .box-width{
   width: 250px !important;
+  height: 100%;
+  border: 2px solid red
 }
 
 .box-width-mini-chart{
@@ -406,7 +408,24 @@ overflow-y: auto;
   height: 100px !important;
   font-family: Rubik,sans-serif;
 }
-@media (min-width: 1900px) and (max-width: 7000px){
+.grapheight{
+  height: auto;
+}
+@media(min-width: 2100px) and (max-width: 2160px){
+  .scrollView{
+    height: 29% !important;
+    overflow-y: auto;
+    border: 2px solid red;
+      }
+}
+@media(min-width: 1910px) and (max-width: 1920px){
+  .scrollView{
+    height: fit-content;
+        overflow-y: auto;
+    border: 2px solid red;
+      }
+}
+@media (min-width: 1960px) and (max-width: 7000px){
   .box-width-mini-chart{
     width: 49% !important;
     height: 400px;
@@ -425,12 +444,18 @@ overflow-y: auto;
     /* border: 2px solid red */
   } 
   .scrollView{
-    height: 960px;
+    max-height: 28%;
     overflow-y: auto;
+    /* border: 2px solid red; */
       }
       .bg-blue-86999{
         width: 440px;
         font-family: Rubik,sans-serif;
+    }
+    .grapheight{
+      height: 70% !important;
+    /* border: 2px solid red; */
+
     }
 }
 @media(max-width: 1390px){

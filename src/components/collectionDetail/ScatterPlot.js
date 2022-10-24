@@ -109,7 +109,7 @@ function MyScatterPlot() {
                     <div className="selectFloorPrice me-2">
                     <span className="text-white text-xl font-bold">Period</span>&nbsp;
                         <select className='selectFloorPriceDown text-white text-xl font-bold' onChange={(e) => getValue(e)}>
-                            <option value="15M">15min</option>
+                            <option value="15M">15M</option>
                             <option value="1H" >1H</option>
                             <option value="1D">1D</option>
                             <option value="7D" selected>7D</option>
@@ -127,12 +127,12 @@ function MyScatterPlot() {
             </div>
             {
                 !isLoading ?
-                    <Scatter options={options} data={data} width={380} height={180}/>
+                    <Scatter options={options} data={data} width={380} className="grapheight" />
                     :
-                    <SkeletonTheme baseColor="#202020" highlightColor="#444">
-                        <p>
+                    <SkeletonTheme baseColor="#202020" highlightColor="#444" >
+                        <span > 
                             <Skeleton count={12} />
-                        </p>
+                        </span>
                     </SkeletonTheme>
             }
         </div>

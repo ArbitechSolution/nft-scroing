@@ -54,7 +54,7 @@ dispatch(Floor_Price_Api(params, value))
             <div className='d-flex justify-content-between pt-1'>
             <div className="text-white text-xl font-bold text-start mb-2 ms-2">Floor Price</div>
             <div className=''>
-                <div className="selectFloorPrice ms-2">
+                <div className="selectFloorPrice me-2">
                 <span className="text-white text-xl font-bold">Period</span>&nbsp;
                     <select className='selectFloorPriceDown text-white text-xl font-bold' onChange={(e)=>getValue(e)}>
                     <option value="15M">15min</option>

@@ -8,6 +8,7 @@ import {
     Area,
     ResponsiveContainer,
 } from "recharts"
+import {Dropdown, DropdownButton} from 'react-bootstrap';
 import { AssetsForSale_Api } from "../redux/Action/Action"
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from "react-router-dom";
@@ -45,8 +46,13 @@ function AssetsForSale() {
             <div className='d-flex justify-content-between pt-1'>
                 <div className="text-white text-xl font-bold text-center mb-2">Active Listings</div>
                 <div className=''>
-                    <div className="selectFloorPrice ms-2">
+                    <div className="selectFloorPrice me-2">
                     <span className="text-white text-xl font-bold">Period</span>&nbsp;
+                    {/* <DropdownButton id="dropdown-basic-button" title="Dropdown button">
+      <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
+      <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
+      <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
+    </DropdownButton> */}
                         <select className='selectFloorPriceDown text-white text-xl font-bold' onChange={(e) => getValue(e)}>
                             <option value="3D" >3D</option>
                             <option value="7D" selected >7D</option>
