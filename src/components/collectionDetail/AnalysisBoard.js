@@ -527,7 +527,7 @@ useEffect(()=>{
               </div>    
               <div className="col-lg-7  ">
                   <div className="row justify-content-between " >
-                      <div className="col-lg-5 col-11  box-width-mini-chart ">
+                      <div className="col-lg-5 col-11 img-fluid  box-width-mini-chart border">
                           <AssetsForSale />
                       </div>
                       <div className="col-lg-5 col-11  box-width-mini-chart ">

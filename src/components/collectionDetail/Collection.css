@@ -549,6 +549,13 @@ overflow-y: auto;
     height: 38vh !important
     }
 }
+@media(min-width: 1600px) and (max-width: 1905px){
+  .box-width-mini-chart{
+    width: 48% !important;
+    /* border: 2px solid red !important */
+    /* height: 400px; */
+  }
+}
 @media(max-width: 1390px){
   .box-width-mini-chart{
     width: 40%;
